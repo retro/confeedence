@@ -10,6 +10,7 @@
                  [cljs-ajax "0.5.8"]
                  [com.stuartsierra/dependency "0.2.0"]
                  [keechma/entitydb "0.1.0"]
+                 [org.clojars.mihaelkonjevic/garden-basscss "0.2.0"]
                  [binaryage/devtools "0.8.2"]
                  [garden "1.3.2"]
                  [hodgepodge "0.1.3"] 

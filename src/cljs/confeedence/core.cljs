@@ -4,7 +4,9 @@
    [keechma.app-state :as app-state]
    [confeedence.ui :refer [ui]]
    [confeedence.controllers :refer [controllers]]
-   [confeedence.subscriptions :refer [subscriptions]]))
+   [confeedence.subscriptions :refer [subscriptions]]
+   [keechma.toolbox.css.core :refer [update-page-css]]
+   [confeedence.stylesheets :refer [stylesheet]]))
 
 
 (def app-definition
@@ -19,7 +21,8 @@
 (defonce running-app (clojure.core/atom))
 
 (defn start-app! []
-  (reset! running-app (app-state/start! app-definition)))
+  (reset! running-app (app-state/start! app-definition))
+  (update-page-css (stylesheet)))
 
 (defn dev-setup []
   (when ^boolean js/goog.DEBUG

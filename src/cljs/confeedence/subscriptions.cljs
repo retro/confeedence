@@ -36,4 +36,4 @@
 (def subscriptions
   (merge
    (make-subscriptions datasources edb-schema)
-   { :form-state forms-helpers/form-state-sub}))
+   {:form-state forms-helpers/form-state-sub}))
