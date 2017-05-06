@@ -5,6 +5,7 @@
             [confeedence.stylesheets.colors :refer [colors-with-variations]]))
 
 (defelement -sidebar-form-wrap
+  :class [:relative]
   :style [{:min-width "400px"
            :overflow-y "auto"
            :border-left (str "2px solid " (:grey colors-with-variations))}
@@ -14,6 +15,18 @@
   :class [:flex-auto :flex]
   :style [{:max-width "100vw"
            :overflow "hidden"}])
+
+(defelement close-wrap
+  :tag :a
+  :class [:absolute :left-0 :right-0]
+  :style [{:width "4rem"
+           :height "4rem"}])
+
+(defelement close-icon
+  :tag :img
+  :class [:fit]
+  :style [{:width "4rem"
+           :height "4rem"}])
 
 (defn render [ctx]
   (let [access-token (sub> ctx :access-token)
@@ -27,7 +40,8 @@
           [(ui/component ctx :schedule)]
           (when form
             [-sidebar-form-wrap
-             [:a {:href (ui/url ctx (dissoc current-route :form))} "Close Form"]
+             [close-wrap {:href (ui/url ctx (dissoc current-route :form))}
+              [close-icon {:src "/images/close.svg"}]]
              (case (:type form)
                "conference" [(ui/component ctx :form-schedule)]
                "event" [(ui/component ctx :form-event)]
