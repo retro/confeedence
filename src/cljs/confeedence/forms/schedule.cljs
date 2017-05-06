@@ -77,9 +77,12 @@
       (if new?
         (pipeline! [value app-db]
           (pp/commit! (append-collection app-db :schedule :list [data]))
-          (pp/redirect! {:page "edit" :id (:id data)}))
+          (pp/redirect! {:page "edit" :id (:id data)})
+          (pp/send-command! [:notifications :add] {:message "Conference was successfully created"}))
         (pipeline! [value app-db]
-          (pp/commit! (insert-named-item app-db :schedule :current data)))))))
+          (pp/commit! (insert-named-item app-db :schedule :current data))
+          (pp/redirect! (dissoc (get-in app-db [:route :data]) :form))
+          (pp/send-command! [:notifications :add] {:message "Conference settings saved"}))))))
 
 (defn constructor []
   (->ScheduleForm validator))
