@@ -3,7 +3,8 @@
             [confeedence.stylesheets.colors :refer [colors-with-variations]]
             [keechma.toolbox.forms.helpers :as forms-helpers]
             [confeedence.forms.validators :as validators]
-            [reagent.core :as r]))
+            [reagent.core :as r]
+            [cljsjs.react-datetime]))
 
 (defelement -input
   :tag :input
@@ -13,6 +14,14 @@
            :outline "none"
            :border-bottom (str "2px solid " (:lighter-gray colors-with-variations))}
           [:&:focus {:border-bottom-color (:green colors-with-variations)}]])
+
+(defelement -datetime-input-wrap
+  :tag :div
+  :style [[:.form-control {:width "100%"
+           :border "none"
+           :outline "none"
+           :border-bottom (str "2px solid " (:lighter-gray colors-with-variations))}
+           [:&:focus {:border-bottom-color (:green colors-with-variations)}]]])
 
 (defelement -textarea
   :tag :textarea
@@ -31,6 +40,10 @@
 
 (defelement -label
   :tag :label
+  :class [:ff-h5 :c-gray :block :mb1])
+
+(defelement -faux-label
+  :tag :span
   :class [:ff-h5 :c-gray :block :mb1])
 
 (defelement -green-button
@@ -65,10 +78,60 @@
                  :value (forms-helpers/attr-get-in form-state attr)}]
      (render-errors (forms-helpers/attr-errors form-state attr))]))
 
-(defn controlled-select [{:keys [form-state stop-editing helpers placeholder label attr options]}]
+(defn controlled-select [{:keys [form-state helpers placeholder label attr options]}]
   (let [on-change (:on-change helpers)
         value (forms-helpers/attr-get-in form-state (keyword attr))]
     [:div.mb2
      [-label (or placeholder label)]
      [-select {:on-change (on-change attr) :value (or value "")}
       (doall (map (fn [o] [:option {:value (first o) :key (first o)} (last o)]) options))]]))
+
+(defn controlled-time-picker  [{:keys [form-state helpers placeholder label attr options time-format date-format]}]
+  (let [{:keys [set-value]} helpers]
+    [:div.mb2
+     [-label (or placeholder label)]
+     [-datetime-input-wrap {:key [time-format date-format]}
+      [:> js/Datetime {:value (forms-helpers/attr-get-in form-state attr)
+                       :on-change #(set-value attr %)
+                       :time-format time-format
+                       :date-format date-format
+                       :input-props {:class-name "form-control bg-lightest-gray ff-p1 c-dark p1"}}]] 
+     (render-errors (forms-helpers/attr-errors form-state attr))]))
+
+(defn controlled-radio-group [{:keys [form-state helpers placeholder label attr options]}]
+  (let [on-change (:on-change helpers)
+        value (forms-helpers/attr-get-in form-state (keyword attr))]
+    [:div.mb2
+     [-faux-label (or placeholder label)]
+     (doall
+      (map (fn [[opt-value label]]
+             [:label.inline-block.mr2 {:key opt-value}
+              [:input.mr1
+               {:type :radio :value opt-value :checked (= opt-value value) :on-change (on-change attr)}]
+              label])
+           options))]))
+
+(defn controlled-checkbox [{:keys [form-state helpers placeholder label attr]}]
+  (let [{:keys [set-value]} helpers
+        value (forms-helpers/attr-get-in form-state attr)]
+    [:div.mb2
+     [:label.block
+      [:input.mr1 {:type :checkbox
+                   :on-change #(set-value attr (not value))
+                   :checked (boolean value)
+                   :value true}]
+      (or placeholder label)]
+     (render-errors (forms-helpers/attr-errors form-state attr))]))
+
+(defn controlled-group-select [{:keys [form-state helpers placeholder label attr options]}]
+  (let [on-change (:on-change helpers)
+        value (forms-helpers/attr-get-in form-state (keyword attr))]
+    [:div.mb2
+     [-label (or placeholder label)]
+     [-select {:on-change (on-change attr) :value (or value "")}
+      (doall (map (fn [optgroup]
+                    (let [label (first optgroup)
+                          opts (rest optgroup)]
+                      [:optgroup {:key label :label label}
+                       (doall (map (fn [o]
+                                     [:option {:value (first o) :key (first o)} (last o)]) opts))])) options))]]))

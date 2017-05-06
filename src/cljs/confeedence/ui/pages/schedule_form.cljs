@@ -24,6 +24,7 @@
              [:a {:href (ui/url ctx (dissoc current-route :form))} "Close Form"]
              (case (:type form)
                "conference" [(ui/component ctx :form-schedule)]
+               "event" [(ui/component ctx :form-event)]
                nil)])]
          [:div.flex-grow
           [(ui/component ctx :schedule-list)]
@@ -35,5 +36,6 @@
                    :subscription-deps [:access-token :current-schedule]
                    :component-deps [:form-access-token
                                     :form-schedule
+                                    :form-event
                                     :schedule-list
                                     :schedule]}))

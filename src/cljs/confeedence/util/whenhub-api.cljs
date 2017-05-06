@@ -57,3 +57,10 @@
                :response-format :json
                :keywords? true})
          (p/map process-schedule-tags))))
+
+(defn create-event [access-token schedule-id data]
+  (POST (str "https://api.whenhub.com/api/schedules/" schedule-id "/events?access_token=" access-token)
+        {:params data
+         :format :json
+         :response-format :json
+         :keywords? true}))
