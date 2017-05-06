@@ -11,10 +11,14 @@
   :class [:flex :flex-column :height-full])
 
 (defelement title-wrap
-  :class [:border-bottom :bd-grey])
+  :class [:border-bottom :bd-lighter-gray :bg-lightest-gray :p2])
 
 (defelement page-wrap
   :class [:flex-grow :flex])
+
+(defelement menu-item
+  :tag :a
+  :class [:c-link :c-semi-gray :c-h-dark :pointer :text-decoration-none :uppercase :mx1])
 
 (defn loading-access-token? [ctx]
   (let [status (:status (sub> ctx :access-token-meta))]
@@ -26,7 +30,9 @@
     [spinner-wrap
      [spinner 64 "#ff3300"]]
     [layout-wrap
-     [title-wrap "LAYOUT"]
+     [title-wrap
+      [menu-item {:href (ui/url ctx {:page "home"})} "Home"]
+      [menu-item {:href (ui/url ctx {:page "edit"})} "Admin"]]
      [page-wrap
       (case (:page (route> ctx))
         "homepage" [(ui/component ctx :page-homepage)]
