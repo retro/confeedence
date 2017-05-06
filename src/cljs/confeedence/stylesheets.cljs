@@ -41,7 +41,7 @@
            :height "100%"}]
    [:#app {:height "100%"}]
    [:body {:margin 0
-           :font-family system-font-stack
+           :font-family "'Raleway', sans-serif"
            :font-size "16px"
            :height "100%"
            :text-rendering "optimizeLegibility"
