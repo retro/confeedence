@@ -49,6 +49,11 @@
            {"3c8d41e5-90a9-43c4-b224-5b7efd43b1b8"
             (reduce (fn [acc [k v]] (conj acc {:label (name k) :value v})) [] custom-fields)})))
 
+(defn get-event-pipeline [id]
+  (pipeline! [value app-db]
+    (dataloader-controller/wait-dataloader-pipeline!)
+    (get-item-by-id app-db :event id)))
+
 (defn event-process-out [event-record app-db form-props data]
   (-> data
       process-custom-fields-out
@@ -67,6 +72,14 @@
   (when (= path [:confeedence :has-end-date])
     process-has-end-date))
 
+(defn talk-process-attr-with [event-record path]
+  (when (or (= path [:when :startTimezone])
+            (= path [:when :endTimezone]))
+    (fn [app-db form-props form-state path value]
+      (-> form-state
+          (assoc-in [:data :when :startTimezone] value)
+          (assoc-in [:data :when :endTimezone] value)))))
+
 (defn event-get-data [event-record app-db form-props]
   (let [id (last form-props)]
     (if (= "new" id)
@@ -75,9 +88,7 @@
               :startTimezone "US/Central"}
        :confeedence {:has-end-date false
                      :custom-fields {:type "event"}}}
-      (pipeline! [value app-db]
-        (dataloader-controller/wait-dataloader-pipeline!)
-        (get-item-by-id app-db :event id)))))
+      (get-event-pipeline id))))
 
 (defn event-on-submit-success [event-record app-db form-props data]
   (let [event-id (:id data)
@@ -87,6 +98,28 @@
     (pp/commit! (if new?
                   (append-collection app-db :event :current-schedule-events [data])
                   (insert-item app-db :event data)))))
+
+(defn news-get-data [event-record app-db form-props]
+  (let [id (last form-props)]
+    (if (= "new" id)
+      {:when {:period "minute"
+              :startDate (.now js/moment)
+              :startTimezone "US/Central"}
+       :confeedence {:has-end-date false
+                     :custom-fields {:type "news"}}}
+      (get-event-pipeline id))))
+
+(defn talk-get-data [event-record app-db form-props]
+  (let [id (last form-props)]
+    (if (= "new" id)
+      {:when {:period "minute"
+              :startDate (.now js/moment)
+              :startTimezone "US/Central"
+              :endDate (.now js/moment)
+              :endTimezone "US/Central"}
+       :confeedence {:has-end-date true
+                     :custom-fields {:type "talk"}}}
+      (get-event-pipeline id))))
 
 (defrecord EventForm [validator]
   forms-core/IForm
@@ -101,6 +134,38 @@
   (on-submit-success [this app-db form-props data]
     (event-on-submit-success this app-db form-props data)))
 
+(defrecord NewsForm [validator]
+  forms-core/IForm
+  (process-out [this app-db form-props data]
+    (event-process-out this app-db form-props data))
+  (submit-data [this app-db form-props data]
+    (event-submit-data this app-db form-props data))
+  (process-attr-with [this path]
+    (event-process-attr-with this path))
+  (get-data [this app-db form-props]
+    (news-get-data this app-db form-props))
+  (on-submit-success [this app-db form-props data]
+    (event-on-submit-success this app-db form-props data)))
+
+(defrecord TalkForm [validator]
+  forms-core/IForm
+  (process-out [this app-db form-props data]
+    (event-process-out this app-db form-props data))
+  (submit-data [this app-db form-props data]
+    (event-submit-data this app-db form-props data))
+  (process-attr-with [this path]
+    (talk-process-attr-with this path))
+  (get-data [this app-db form-props]
+    (talk-get-data this app-db form-props))
+  (on-submit-success [this app-db form-props data]
+    (event-on-submit-success this app-db form-props data)))
+
+
 (defn event-constructor []
   (->EventForm validator))
 
+(defn news-constructor []
+  (->NewsForm validator))
+
+(defn talk-constructor []
+  (->TalkForm validator))

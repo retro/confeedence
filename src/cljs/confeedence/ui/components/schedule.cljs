@@ -93,6 +93,7 @@
 
 (defn render-events [ctx events] 
   (let [current-route (route> ctx)]
+
     [:ul.max-width-4.mx-auto.clearfix.list-reset.relative
      (doall (map-indexed (fn [i,e]
                            (if (= 0 (mod i 2))
@@ -103,7 +104,7 @@
                                [:p (:description e)]
                                [:br]
                                [:a
-                               {:href (ui/url ctx (assoc current-route :form {:type "event" :id (:id e)}))}
+                               {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
                                "Edit Event"]]
                               [date-circle
                                (format-date (get-in e [:when :startDate]))]
@@ -115,7 +116,7 @@
                                [:p (:description e)]
                                [:br]
                                [:a
-                               {:href (ui/url ctx (assoc current-route :form {:type "event" :id (:id e)}))}
+                               {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
                                "Edit Event"]]
                               [date-circle
                                (format-date (get-in e [:when :startDate]))]
@@ -139,7 +140,8 @@
       [subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
       [render-events ctx (sub> ctx :current-schedule-events)]
       [center-div
-       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"}))} "Add New event"]]]
+       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"}))} "Add New event"]
+       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "news"}))} "Add News"]]]
      [talks-wrap {:style {:background-color (get-color conference :talks-bg-color)}}
       [subtitle-center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
       [talks-column-wrap
@@ -153,7 +155,9 @@
                        [:h3
                         {:style {:color (get-color conference :talks-track-heading-color)}}
                         "Track #" (inc idx)]
-                       [-action-link {:href "#"} "Add New Talk"]]]) (range 0 track-count)))]]]))
+                       [-action-link
+                        {:href (ui/url ctx (assoc current-route :form {:type "talk"}))}
+                        "Add New Talk"]]]) (range 0 track-count)))]]]))
 
 (def component
   (ui/constructor {:renderer render

@@ -31,6 +31,8 @@
              (case (:type form)
                "conference" [(ui/component ctx :form-schedule)]
                "event" [(ui/component ctx :form-event)]
+               "news" [(ui/component ctx :form-news)]
+               "talk" [(ui/component ctx :form-talk)]
                nil)])]
          [:div.flex-auto.flex
           [(ui/component ctx :schedule-list)]
@@ -43,5 +45,7 @@
                    :component-deps [:form-access-token
                                     :form-schedule
                                     :form-event
+                                    :form-news
+                                    :form-talk
                                     :schedule-list
                                     :schedule]}))
