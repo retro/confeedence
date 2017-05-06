@@ -29,6 +29,21 @@
            :name "Label/Value Fields"
            :config {:fieldName "custom"}}]))
 
+(defn add-default-colors [data]
+  (let [tags (:tags data)]
+    (assoc data :tags
+           (concat tags ["confeedence:main-heading-color:pomegranate"
+                         "confeedence:main-text-color:clouds"
+                         "confeedence:main-bg-color:midnight-blue"
+
+                         "confeedence:events-heading-color:midnight-blue"
+                         "confeedence:events-bg-color:clouds"
+
+                         "confeedence:talks-heading-color:sun-flower"
+                         "confeedence:talks-bg-color:wet-asphalt"
+                         "confeedence:talks-track-bg-color:midnight-blue"
+                         "confeedence:talks-track-heading-color:pomegranate"]))))
+
 (defn add-calendar [data]
   (assoc data :calender {:calendarType "absolute"}))
 
@@ -48,7 +63,7 @@
                              add-custom-field
                              add-calendar)]
       (if new?
-        (create-schedule (get-access-token app-db) processed-data)
+        (create-schedule (get-access-token app-db) (add-default-colors processed-data))
         (update-schedule (get-access-token app-db) processed-data))))
   (on-submit-success [this app-db form-props data]
     (let [new? (not= (:id data) (get-in app-db [:route :data :id]))]
