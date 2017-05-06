@@ -13,10 +13,14 @@
   :class [:flex :flex-column :height-full])
 
 (defelement navbar-wrap
-  :class [:border-bottom :bd-light-gray :bg-lightest-gray :px2 :flex :items-center :justify-between :relative])
+  :class [:absolute :z1 :border-bottom :bd-light-gray :bg-lightest-gray :px2 :flex :items-center :justify-between :relative]
+  :style [{:height "78px"
+           :width "100vw"
+           :top 0}])
 
 (defelement page-wrap
-  :class [:flex-auto :flex])
+  :class [:flex-auto :flex]
+  :style [{:margin-top "78px"}])
 
 (defelement menu
   :tag :ul
