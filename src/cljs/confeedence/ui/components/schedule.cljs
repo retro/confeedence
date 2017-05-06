@@ -74,7 +74,8 @@
       [subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
       [render-events ctx (sub> ctx :current-schedule-events)]
       [center-div
-       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"}))} "Add New event"]]]
+       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"}))} "Add New event"]
+       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "news"}))} "Add News"]]]
      [talks-wrap {:style {:background-color (get-color conference :talks-bg-color)}}
       [subtitle-center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
       [talks-column-wrap
