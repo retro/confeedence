@@ -141,9 +141,10 @@
           (case (:page current-route)
             "homepage" [(ui/component ctx :page-homepage)]
             "edit"     [(ui/component ctx :page-schedule-form)]
-            nil)]]))))
+            nil)]
+         [(ui/component ctx :notifications)]]))))
 
 (def component
   (ui/constructor {:renderer render
                    :subscription-deps [:access-token-meta :current-user]
-                   :component-deps [:page-homepage :page-schedule :page-schedule-form]}))
+                   :component-deps [:page-homepage :page-schedule :page-schedule-form :notifications]}))

@@ -43,6 +43,15 @@
         (assoc-in data path (.format tz-date format)))
       data)))
 
+(def type->name
+  {"event" "Event"
+   "news" "News item"
+   "talk" "Talk"})
+
+(defn build-success-message [data]
+  (let [type (get-in data [:confeedence :custom-fields :type])]
+    (str (get type->name type) " " (:name data) " was successfully saved.")))
+
 (defn process-custom-fields-out [data]
   (let [custom-fields (get-in data [:confeedence :custom-fields])]
     (assoc data :customFieldData
@@ -95,9 +104,13 @@
         events (get-collection app-db :event :current-schedule-events)
         event-ids (set (map :id events))
         new? (not (contains? event-ids event-id))]
-    (pp/commit! (if new?
-                  (append-collection app-db :event :current-schedule-events [data])
-                  (insert-item app-db :event data)))))
+    (pipeline! [value app-db]
+      (pp/commit! (if new?
+                    (append-collection app-db :event :current-schedule-events [data])
+                    (insert-item app-db :event data)))
+      (pp/redirect! (dissoc (get-in app-db [:route :data]) :form))
+      (pp/send-command! [:notifications :add] {:message (build-success-message data)}))))
+
 
 (defn news-get-data [event-record app-db form-props]
   (let [id (last form-props)]
