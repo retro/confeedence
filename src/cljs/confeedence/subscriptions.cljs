@@ -11,13 +11,10 @@
      (get-in @app-db-atom (flatten [:kv key])))))
 
 (defn get-collection [app-db type name]
-  [(edb/get-collection app-db type name)
-   (edb/get-collection-meta app-db type name)])
+  (edb/get-collection app-db type name))
 
 (defn get-named-item [app-db type name]
-  (let [meta (edb/get-named-item-meta app-db type name)]
-    [(edb/get-named-item app-db type name)
-     (or meta {:status :loaded})]))
+  (edb/get-named-item app-db type name))
 
 (defn list-for
   ([type] (list-for type :list))
@@ -36,4 +33,5 @@
 (def subscriptions
   (merge
    (make-subscriptions datasources edb-schema)
-   {:form-state forms-helpers/form-state-sub}))
+   {:form-state forms-helpers/form-state-sub
+    :notifications (list-for :notification)}))

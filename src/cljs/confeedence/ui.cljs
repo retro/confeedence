@@ -9,7 +9,8 @@
             [confeedence.ui.components.forms.news :as form-news]
             [confeedence.ui.components.forms.talk :as form-talk]
             [confeedence.ui.components.schedule-list :as schedule-list]
-            [confeedence.ui.components.schedule :as schedule]))
+            [confeedence.ui.components.schedule :as schedule]
+            [confeedence.ui.components.notifications :as notifications]))
 
 (def ui
   {:main               layout/component
@@ -25,4 +26,6 @@
    :form-talk          form-talk/component
 
    :schedule-list      schedule-list/component
-   :schedule           schedule/component})
+   :schedule           schedule/component
+
+   :notifications      notifications/component})

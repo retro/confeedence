@@ -24,11 +24,13 @@
         helpers (forms-helpers/make-component-helpers ctx form-props)
         submit (:submit helpers)
         conference (sub> ctx :current-schedule)
-        track-count (js/parseInt (get-in conference [:confeedence-tags :track-count]))]
+        track-count (js/parseInt (get-in conference [:confeedence-tags :track-count]))
+        new? (not (get-in form-state [:data :id]))]
     
     [:form.m4 {:on-submit submit}
+     [:h1 (if new? "Create a new talk" "Update talk")]
      (when (= :submit-failed (get-in form-state [:state :type]))
-       [:div.bg-red.c-white.p1.mb2 "We couldn't save the event"])
+       [:div.bg-red.c-white.p1.mb2 "We couldn't save the talk"])
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Talk Title" :attr :name}]
      [controlled-textarea {:form-state form-state :helpers helpers :placeholder "Description" :attr :confeedence.custom-fields.description}]
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Speaker Name" :attr :confeedence.custom-fields.speaker-name}]
