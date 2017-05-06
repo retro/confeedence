@@ -111,16 +111,21 @@
        [link-item "Logout"]]]]]])
 
 (defn render-navbar [ctx usr]
-  [navbar-wrap
-   [logo-wrap
-    [logo {:src "/images/logo.svg"}]]
-   [menu 
-    [menu-item 
-     [menu-item-link {:href (ui/url ctx {:page "home"})} "Home"]]
-    [menu-item
-     [menu-item-link {:href (ui/url ctx {:page "edit"})} "Admin"]]]
-   (when usr
-     [render-user-info ctx usr])])
+  (let [current-route (route> ctx)
+        show-preview-link? (and (:id current-route) (= "edit" (:page current-route)))]
+    [navbar-wrap
+     [logo-wrap
+      [logo {:src "/images/logo.svg"}]]
+     [menu 
+      [menu-item 
+       [menu-item-link {:href (ui/url ctx {:page "home"})} "Home"]]
+      [menu-item
+       [menu-item-link {:href (ui/url ctx {:page "edit"})} "Admin"]]
+      (when show-preview-link?
+        [menu-item
+         [menu-item-link {:href (ui/url ctx {:page "show" :id (:id current-route)})} "Preview Conference Page"]])]
+     (when usr
+       [render-user-info ctx usr])]))
 
 (defn loading-access-token? [ctx]
   (let [status (:status (sub> ctx :access-token-meta))]
