@@ -64,3 +64,11 @@
          :format :json
          :response-format :json
          :keywords? true}))
+
+
+(defn load-events [access-token schedule-id]
+  (GET (str "https://api.whenhub.com/api/schedules/" schedule-id "/events")
+        {:params {:access_token access-token}
+         :format :json
+         :response-format :json
+         :keywords? true}))

@@ -1,7 +1,7 @@
 (ns confeedence.datasources
   (:require [hodgepodge.core :refer [get-item local-storage]]
             [confeedence.util.dataloader :refer [map-loader reload-params]]
-            [confeedence.util.whenhub-api :refer [load-user-info load-schedules load-schedule-by-id]]))
+            [confeedence.util.whenhub-api :refer [load-user-info load-schedules load-schedule-by-id load-events]]))
 
 (def access-token-loader 
   (map-loader
@@ -24,15 +24,26 @@
                          (when (and (= "edit" (:page route))
                                     (nil? (:id route)))
                            deps))
-               :loader (map-loader (fn [params]
-                                     (when-let [access-token (get-in params [:params :access-token])]
+               :loader (map-loader (fn [req]
+                                     (when-let [access-token (get-in req [:params :access-token])]
                                        (load-schedules access-token))))}
+
+   :current-schedule-events {:target [:edb/collection :event/list]
+                             :deps [:access-token]
+                             :loader (map-loader
+                                      (fn [req]
+                                        (when-let [params (:params req)]
+                                          (load-events (:access-token params) (:schedule-id params)))))
+                             :params (fn [prev {:keys [id]} {:keys [access-token]}]
+                                       (when (and id access-token)
+                                         {:schedule-id id
+                                          :access-token access-token}))}
 
    :current-schedule {:target [:edb/named-item :schedule/current]
                       :deps [:access-token]
-                      :loader (map-loader (fn [params]
-                                            (when-let [access-token (get-in params [:params :access-token])]
-                                              (load-schedule-by-id access-token (get-in params [:params :id])))))
+                      :loader (map-loader (fn [req]
+                                            (when-let [access-token (get-in req [:params :access-token])]
+                                              (load-schedule-by-id access-token (get-in req [:params :id])))))
                       :params (fn [prev route {:keys [access-token]}]
                                 (let [page (:page route)
                                       id (:id route)

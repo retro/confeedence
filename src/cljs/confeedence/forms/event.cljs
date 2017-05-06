@@ -29,8 +29,8 @@
 
 (def out-date-formats
   {"minute" "YYYY-MM-DDTHH:mm:ssZ"
-   "day" "YYYY-MM-DD"
-   "year" "YYYY"})
+   "day"    "YYYY-MM-DD"
+   "year"   "YYYY"})
 
 (defn process-date-out [data path timezone-path]
   (let [period (get-in data [:when :period])
@@ -42,10 +42,17 @@
         (assoc-in data path (.format tz-date format)))
       data)))
 
+(defn process-custom-fields-out [data]
+  (let [custom-fields (get-in data [:confeedence :custom-fields])]
+    (assoc data :customFieldData
+           {"3c8d41e5-90a9-43c4-b224-5b7efd43b1b8"
+            (reduce (fn [acc [k v]] (conj acc {:label k :value v})) [] custom-fields)})))
+
 (defrecord EventForm [validator]
   forms-core/IForm
   (process-out [this app-db form-props data]
     (-> data
+        process-custom-fields-out
         (process-date-out [:when :startDate] [:when :startTimezone])
         (process-date-out [:when :endDate] [:when :endTimezone])
         (dissoc :confeedence)))
@@ -61,7 +68,8 @@
         {:when {:period "minute"
                 :startDate (.now js/moment)
                 :startTimezone "US/Central"}
-         :confeedence {:has-end-date false}})))
+         :confeedence {:has-end-date false
+                       :custom-fields {:type "event"}}})))
   (on-submit-success [this app-db form-props data]
     (println "SUBMIT SUCCESS" data)))
 
