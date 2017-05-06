@@ -29,11 +29,11 @@
   :class [:center])
 
 (defelement conference-info-wrap
-  :class [:pb4])
+  :class [:py6])
 
 (defelement title-center
   :tag :h1
-  :class [:center])
+  :class [:center :mt0 :mb1])
 
 (defelement conference-description
   :tag :p
