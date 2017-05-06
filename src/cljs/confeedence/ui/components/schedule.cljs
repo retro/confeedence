@@ -5,14 +5,15 @@
             [keechma.toolbox.forms.helpers :as forms-helpers]
             [cljsjs.moment]
             [confeedence.stylesheets.colors :refer [theme-colors-by-slug]]
-            [medley.core :refer [dissoc-in]]))
+            [medley.core :refer [dissoc-in]]
+            [keechma.toolbox.util :refer [class-names]]))
 
 (defn format-date [date]
   (.format (js/moment date) "ll"))
 
 (defelement -action-link
   :tag :a
-  :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block])
+  :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block :border-width-2 :bd-white :border])
 
 (defelement main-wrap
   :class [:relative :flex :flex-column :flex-auto]
@@ -49,6 +50,16 @@
   :class [:absolute :left-0 :right-0 :mx-auto :circle :flex :items-center :justify-center :c-white :bg-blue :c-button :center]
   :style [{:width "7rem"
            :height "7rem"}])
+
+(defelement timeline-line
+  :class [:bg-blue :absolute]
+  :style [{:top 0
+           :left "50%"
+           :margin-left "-1px"
+           :width "2px"
+           :bottom 0}
+          [:&.last-ev {:bottom "auto"
+                       :height "20px"}]])
 
 (defelement timeline-item-wrap-left
   :class [:bg-lightest-gray :left :p2 :relative]
@@ -133,22 +144,24 @@
                        [] (map-indexed (fn [idx event] [idx event]) (sort-events events)))))
 
 (defn render-events [ctx events] 
-  (let [current-route (route> ctx)]
-
+  (let [current-route (route> ctx)
+        first-ev (first events)
+        last-ev (last events)]
     [:ul.max-width-4.mx-auto.clearfix.list-reset.relative
-     (doall (map (fn [e]
-                   [:li.clearfix.pb2 {:key [(:id e) (:event-end? e)]}
-                    [(if (= :left (:timeline-side e)) timeline-item-wrap-left timeline-item-wrap-right)
-                     (:name e)
-                     [:br]
-                     [:p (:description e)]
-                     [:br]
-                     [:a
-                      {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
-                      "Edit Event"]]
-                    [date-circle
-                     (format-date (get-in e [:when :startDate]))]
-                    ]) events))]))
+     (doall
+      (map (fn [e]
+             [:li.clearfix.pb2.relative {:key [(:id e) (:event-end? e)]}
+              [timeline-line {:class (class-names {:last-ev (= e last-ev)})}]
+              [(if (= :left (:timeline-side e)) timeline-item-wrap-left timeline-item-wrap-right)
+               (:name e)
+               [:br]
+               [:p (:description e)]
+               [:br]
+               [-action-link
+                {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
+                "Edit Event"]]
+              [date-circle
+               (format-date (get-in e [:when :startDate]))]]) events))]))
 
 
 (defn render-talk [ctx conference talk]
@@ -161,7 +174,8 @@
        [:div "Speaker Bio: " (get-in talk [:confeedence :custom-fields :speaker-bio])]
        [:img {:src (if (seq photo-url) photo-url "/img/avatar.png")
               :style {:height "40px" :width "40px"}}]
-       [:a {:href (ui/url ctx (assoc current-route :form {:type "talk" :id (:id talk)}))} "Edit Talk"]])))
+       [:div
+        [-action-link {:href (ui/url ctx (assoc current-route :form {:type "talk" :id (:id talk)}))} "Edit Talk"]]])))
 
 (defn render-talks [ctx conference track-name talks]
   [:div.pb2
