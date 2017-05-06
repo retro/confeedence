@@ -51,8 +51,16 @@
   :style [{:width "7rem"
            :height "7rem"}])
 
+(defelement timeline-wrap
+  :tag :ul
+  :class [:max-width-4 :mx-auto :clearfix :list-reset :relative])
+
+(defelement timeline-item
+  :tag :li
+  :class [:clearfix :pb2 :relative])
+
 (defelement timeline-line
-  :class [:bg-blue :absolute]
+  :class [:absolute]
   :style [{:top 0
            :left "50%"
            :margin-left "-1px"
@@ -62,7 +70,7 @@
                        :height "20px"}]])
 
 (defelement timeline-item-wrap-left
-  :class [:bg-lightest-gray :left :p2 :relative]
+  :class [:bg-lightest-gray :left :px2 :py1 :relative]
   :style [{:border-radius "0.2rem"
            :width "38%"
            :min-height "10rem"
@@ -77,10 +85,13 @@
                      :height 0
                      :border-style "solid"
                      :border-width "10px 0 10px 10px"
-                     :border-color "transparent transparent transparent #ffffff"}]])
+                     :border-top-color "transparent"
+                     :border-right-color "transparent"
+                     :border-bottom-color "transparent"
+                     :border-left-color "currentColor"}]])
 
 (defelement timeline-item-wrap-right
-  :class [:bg-lightest-gray :right :p2 :relative]
+  :class [:bg-lightest-gray :right :px2 :py1 :relative]
   :style [{:border-radius "0.2rem"
            :width "38%"
            :min-height "10rem"
@@ -95,7 +106,17 @@
                       :height 0
                       :border-style "solid"
                       :border-width "10px 10px 10px 0"
-                      :border-color "transparent #ffffff transparent transparent"}]])
+                      :border-top-color "transparent"
+                      :border-right-color "currentColor"
+                      :border-bottom-color "transparent"
+                      :border-left-color "transparent"}]])
+
+(defelement event-title
+  :tag :h2
+  :class [:mt0 :mb0])
+
+(defelement event-description
+  :tag :p)
 
 (defn group-events [events]
   (reduce (fn [acc e]
@@ -143,25 +164,27 @@
                              (conj acc event-with-side))))
                        [] (map-indexed (fn [idx event] [idx event]) (sort-events events)))))
 
-(defn render-events [ctx events show-action-links?] 
+(defn render-events [ctx conference events show-action-links?] 
   (let [current-route (route> ctx)
         first-ev (first events)
         last-ev (last events)]
-    [:ul.max-width-4.mx-auto.clearfix.list-reset.relative
+    [timeline-wrap
      (doall
       (map (fn [e]
-             [:li.clearfix.pb2.relative {:key [(:id e) (:event-end? e)]}
-              [timeline-line {:class (class-names {:last-ev (= e last-ev)})}]
+             [timeline-item {:key [(:id e) (:event-end? e)]}
+              [timeline-line {:style {:background-color (get-color conference :events-timeline-bg-color)}
+                              :class (class-names {:last-ev (= e last-ev)})}]
               [(if (= :left (:timeline-side e)) timeline-item-wrap-left timeline-item-wrap-right)
-               (:name e)
-               [:br]
-               [:p (:description e)]
-               [:br]
+               {:style {:background-color (get-color conference :events-callout-bg-color)
+                        :color (get-color conference :events-callout-bg-color)}}
+               [event-title {:style {:color (get-color conference :events-callout-heading-color)}} (:name e)]
+               [event-description {:style {:color (get-color conference :events-callout-text-color)}} (:description e)]
                (when show-action-links?
                  [-action-link
                   {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
                   "Edit Event"])]
-              [date-circle
+              [date-circle {:style {:background-color (get-color conference :events-timeline-bg-color)
+                                    :color (get-color conference :events-timeline-text-color)}}
                (format-date (get-in e [:when :startDate]))]]) events))]))
 
 
@@ -215,7 +238,7 @@
          [-action-link {:href (ui/url ctx (assoc current-route :form {:type "conference"}))} "Edit Conference Info"]])]
      [events-wrap {:style {:background-color (get-color conference :events-bg-color)}}
       [subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
-      [render-events ctx timeline-events show-action-links?]
+      [render-events ctx conference timeline-events show-action-links?]
       (when show-action-links?
         [center-div
          [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"})) :class "mr1"} "Add New event"]
