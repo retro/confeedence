@@ -10,7 +10,7 @@
 (defelement layout-wrap
   :class [:flex :flex-column :height-full])
 
-(defelement title-wrap
+(defelement navbar-wrap
   :class [:border-bottom :bd-lighter-gray :bg-lightest-gray :p2])
 
 (defelement page-wrap
@@ -30,7 +30,7 @@
     [spinner-wrap
      [spinner 64 "#ff3300"]]
     [layout-wrap
-     [title-wrap
+     [navbar-wrap
       [menu-item {:href (ui/url ctx {:page "home"})} "Home"]
       [menu-item {:href (ui/url ctx {:page "edit"})} "Admin"]]
      [page-wrap
