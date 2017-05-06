@@ -8,7 +8,7 @@
 
 (defelement -input
   :tag :input
-  :class [:bg-lightest-gray :ff-p1 :c-dark :p1]
+  :class [:bg-lightest-gray :c-small :c-dark :p1]
   :style [{:width "100%"
            :border "none"
            :outline "none"
@@ -25,7 +25,7 @@
 
 (defelement -textarea
   :tag :textarea
-  :class [:bg-lightest-gray :ff-p1 :c-dark :p1]
+  :class [:bg-lightest-gray :c-small :c-dark :p1]
   :style [{:width "100%"
            :border "none"
            :outline "none"
@@ -35,27 +35,27 @@
 
 (defelement -select
   :tag :select
-  :class [:ff-p1 :border :bd-lighter-gray :bg-lightest-gray]
+  :class [:c-small :border :bd-lighter-gray :bg-lightest-gray]
   :style {:width "50%"})
 
 (defelement -label
   :tag :label
-  :class [:ff-h5 :c-gray :block :mb1])
+  :class [:c-medium :c-gray :block :mb1])
 
 (defelement -faux-label
   :tag :span
-  :class [:ff-h5 :c-gray :block :mb1])
+  :class [:c-medium :c-gray :block :mb1])
 
 (defelement -green-button
   :tag :button
   :style {:border-radius "2px"}
-  :class [:bg-green :c-white :ff-p1 :btn :cursor-pointer :bg-h-green-hover :border-none :px2 :py1])
+  :class [:bg-green :c-white :c-button :btn :cursor-pointer :bg-h-green-hover :border-none :px2 :py1 :mx-auto :flex])
 
 (defn render-errors [attr-errors]
   (when-let [errors (get-in attr-errors [:$errors$ :failed])]
     (into [:div.mt1]
           (doall (map (fn [e]
-                        [:div.ff-p2.c-red (validators/get-validator-message e)])
+                        [:div.c-medium.c-red (validators/get-validator-message e)])
                       errors)))))
 
 (defn controlled-input [{:keys [form-state helpers placeholder label attr]}]
@@ -95,7 +95,7 @@
                        :on-change #(set-value attr %)
                        :time-format time-format
                        :date-format date-format
-                       :input-props {:class-name "form-control bg-lightest-gray ff-p1 c-dark p1"}}]] 
+                       :input-props {:class-name "form-control bg-lightest-gray c-small c-dark p1"}}]] 
      (render-errors (forms-helpers/attr-errors form-state attr))]))
 
 (defn controlled-radio-group [{:keys [form-state helpers placeholder label attr options]}]
