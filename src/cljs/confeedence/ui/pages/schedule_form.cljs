@@ -21,6 +21,7 @@
           [(ui/component ctx :schedule)]
           (when form
             [-sidebar-form-wrap
+             [:a {:href (ui/url ctx (dissoc current-route :form))} "Close Form"]
              (case (:type form)
                "conference" [(ui/component ctx :form-schedule)]
                nil)])]
