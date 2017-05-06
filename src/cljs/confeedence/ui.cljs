@@ -6,6 +6,8 @@
             [confeedence.ui.components.forms.access-token :as form-access-token]
             [confeedence.ui.components.forms.schedule :as form-schedule]
             [confeedence.ui.components.forms.event :as form-event]
+            [confeedence.ui.components.forms.news :as form-news]
+            [confeedence.ui.components.forms.talk :as form-talk]
             [confeedence.ui.components.schedule-list :as schedule-list]
             [confeedence.ui.components.schedule :as schedule]))
 
@@ -19,6 +21,8 @@
    :form-access-token  form-access-token/component
    :form-schedule      form-schedule/component
    :form-event         form-event/component
+   :form-news          form-news/component
+   :form-talk          form-talk/component
 
    :schedule-list      schedule-list/component
    :schedule           schedule/component})

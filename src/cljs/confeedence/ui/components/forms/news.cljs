@@ -1,4 +1,4 @@
-(ns confeedence.ui.components.forms.event
+(ns confeedence.ui.components.forms.news
   (:require [keechma.ui-component :as ui]
             [confeedence.ui.components.pure.form-elements
              :refer [controlled-input
@@ -18,7 +18,7 @@
 
 (defn render [ctx]
   (let [current-route (route> ctx)
-        form-props [:event (or (get-in current-route [:form :id]) "new")]
+        form-props [:news (or (get-in current-route [:form :id]) "new")]
         form-state @(forms-helpers/form-state ctx form-props)
         helpers (forms-helpers/make-component-helpers ctx form-props)
         submit (:submit helpers)]
@@ -29,28 +29,15 @@
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Name" :attr :name}]
      [controlled-textarea {:form-state form-state :helpers helpers :placeholder "Description" :attr :description}]
      [:hr]
-     [controlled-radio-group
-      {:form-state form-state :helpers helpers :label "Time Period" :attr :when.period :options time-period-opts}]
+     
      [controlled-time-picker
       {:form-state form-state
        :helpers helpers
-       :label "Start Time"
+       :label "Publish date time"
        :attr :when.startDate
        :date-format (get-date-format form-state)
        :time-format (get-time-format form-state)}]
-     [controlled-group-select {:form-state form-state :helpers helpers :placeholder "Start Timezone" :attr :when.startTimezone :options timezones}]
-     [controlled-checkbox 
-      {:form-state form-state :helpers helpers :label "Has end time/date?" :attr :confeedence.has-end-date}]
-     (when (get-in form-state [:data :confeedence :has-end-date])
-       [:div
-        [controlled-time-picker
-         {:form-state form-state
-          :helpers helpers
-          :label "End Time"
-          :attr :when.endDate
-          :date-format (get-date-format form-state)
-          :time-format (get-time-format form-state)}]
-        [controlled-group-select {:form-state form-state :helpers helpers :placeholder "End Timezone" :attr :when.endTimezone :options timezones}]])
+     [controlled-group-select {:form-state form-state :helpers helpers :placeholder "Timezone" :attr :when.startTimezone :options timezones}]
      
     
      [-green-button "Save Event"]]))

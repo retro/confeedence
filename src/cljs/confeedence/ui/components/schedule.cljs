@@ -53,7 +53,7 @@
                     [:br]
                     (:description e)
                     [:a
-                     {:href (ui/url ctx (assoc current-route :form {:type "event" :id (:id e)}))}
+                     {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))}
                      "Edit Event"]]) events))]))
 
 (defn render [ctx]
@@ -89,7 +89,9 @@
                        [:h3
                         {:style {:color (get-color conference :talks-track-heading-color)}}
                         "Track #" (inc idx)]
-                       [-action-link {:href "#"} "Add New Talk"]]]) (range 0 track-count)))]]]))
+                       [-action-link
+                        {:href (ui/url ctx (assoc current-route :form {:type "talk"}))}
+                        "Add New Talk"]]]) (range 0 track-count)))]]]))
 
 (def component
   (ui/constructor {:renderer render
