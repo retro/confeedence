@@ -43,6 +43,19 @@
   (let [val (get-tag conference tag)]
     (get theme-colors-by-slug val)))
 
+(defn render-events [ctx events]
+  (println events)
+  (let [current-route (route> ctx)]
+    [:ul
+     (doall (map (fn [e]
+                   [:li {:key (:id e)}
+                    (:name e)
+                    [:br]
+                    (:description e)
+                    [:a
+                     {:href (ui/url ctx (assoc current-route :form {:type "event" :id (:id e)}))}
+                     "Edit Event"]]) events))]))
+
 (defn render [ctx]
   (let [current-route (route> ctx)
         form-props [:schedule (:id current-route)]
@@ -59,6 +72,7 @@
        [-action-link {:href (ui/url ctx (assoc current-route :form {:type "conference"}))} "Edit Conference Info"]]]
      [events-wrap {:style {:background-color (get-color conference :events-bg-color)}}
       [subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
+      [render-events ctx (sub> ctx :current-schedule-events)]
       [center-div
        [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"}))} "Add New event"]]]
      [talks-wrap {:style {:background-color (get-color conference :talks-bg-color)}}
@@ -78,4 +92,4 @@
 
 (def component
   (ui/constructor {:renderer render
-                   :subscription-deps [:current-schedule :form-state]}))
+                   :subscription-deps [:current-schedule :form-state :current-schedule-events]}))

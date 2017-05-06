@@ -1,6 +1,6 @@
 (ns confeedence.ui.layout
   (:require [keechma.ui-component :as ui]
-            [keechma.toolbox.css.core :refer [defelement]]
+            [keechma.toolbox.css.core :refer-macros [defelement]]
             [keechma.toolbox.ui :refer [route> sub>]]
             [confeedence.ui.components.pure.spinner :refer [spinner]]
             [clojure.string :as str]
