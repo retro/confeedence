@@ -38,11 +38,18 @@
 
                          "confeedence:events-heading-color:midnight-blue"
                          "confeedence:events-bg-color:clouds"
+                         "confeedence:events-timeline-bg:pomegranate"
+                         "confeedence:events-timeline-text-color:white"
+                         "confeedence:events-callout-bg:midnight-blue"
+                         "confeedence:events-callout-heading-color:sunflower"
+                         "confeedence:events-callout-text-color:white"
 
                          "confeedence:talks-heading-color:sun-flower"
                          "confeedence:talks-bg-color:wet-asphalt"
                          "confeedence:talks-track-bg-color:midnight-blue"
-                         "confeedence:talks-track-heading-color:pomegranate"]))))
+                         "confeedence:talks-track-heading-color:pomegranate"
+                         "confeedence:talks-talk-heading-color:sunflower"
+                         "confeedence:talks-talk-text-color:white"]))))
 
 (defn add-calendar [data]
   (assoc data :calender {:calendarType "absolute"}))

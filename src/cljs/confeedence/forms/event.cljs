@@ -118,7 +118,7 @@
               :endDate (.now js/moment)
               :endTimezone "US/Central"}
        :confeedence {:has-end-date true
-                     :custom-fields {:type "talk"}}}
+                     :custom-fields {:type "talk" :track "1"}}}
       (get-event-pipeline id))))
 
 (defrecord EventForm [validator]

@@ -30,7 +30,7 @@
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "We couldn't save the event"])
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Talk Title" :attr :name}]
-     [controlled-textarea {:form-state form-state :helpers helpers :placeholder "Description" :attr :description}]
+     [controlled-textarea {:form-state form-state :helpers helpers :placeholder "Description" :attr :confeedence.custom-fields.description}]
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Speaker Name" :attr :confeedence.custom-fields.speaker-name}]
      [controlled-textarea {:form-state form-state :helpers helpers :placeholder "Speaker Bio" :attr :confeedence.custom-fields.speaker-bio}]
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Speaker Photo URL" :attr :confeedence.custom-fields.speaker-photo-url}]
@@ -40,7 +40,7 @@
        :helpers helpers
        :placeholder "Track"
        :attr :confeedence.custom-fields.track
-       :options (map (fn [t] [(inc t) (inc t)]) (range 0 track-count))}]
+       :options (concat [["" "Please Select"]] (map (fn [t] [(inc t) (inc t)]) (range 0 track-count)))}]
      [:hr]
      
      [controlled-time-picker

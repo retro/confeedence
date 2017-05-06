@@ -60,6 +60,7 @@
    [:.width-full {:width "100%"}]
    [:.cursor-pointer {:cursor 'pointer}] 
    [:.pill {:border-radius "999em"}]
+   [:.border-width-2 {:border-width "2px"}]
    @toolbox-css/component-styles
    spin
    [:.spin {:animation [[spin "1.5s" :linear :infinite]]}]])
