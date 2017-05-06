@@ -5,11 +5,12 @@
             [keechma.toolbox.pipeline.core :as pp]
             [keechma.toolbox.forms.core :as forms-core]
             [keechma.toolbox.forms.helpers :as forms-helpers]
-            [confeedence.util.whenhub-api :refer [create-event]]
+            [confeedence.util.whenhub-api :refer [create-event update-event]]
             [keechma.toolbox.pipeline.core :as pp :refer-macros [pipeline!]]
             [promesa.core :as p]
+            [confeedence.edb :refer [get-collection append-collection insert-item get-item-by-id]]
             [keechma.toolbox.dataloader.core :as dataloader]
-            [keechma.toolbox.dataloader.core :as dataloader]
+            [keechma.toolbox.dataloader.controller :as dataloader-controller]
             [cljsjs.moment-timezone]
             [medley.core :refer [dissoc-in]]
             [confeedence.util :refer [get-access-token]]))
@@ -46,33 +47,60 @@
   (let [custom-fields (get-in data [:confeedence :custom-fields])]
     (assoc data :customFieldData
            {"3c8d41e5-90a9-43c4-b224-5b7efd43b1b8"
-            (reduce (fn [acc [k v]] (conj acc {:label k :value v})) [] custom-fields)})))
+            (reduce (fn [acc [k v]] (conj acc {:label (name k) :value v})) [] custom-fields)})))
+
+(defn event-process-out [event-record app-db form-props data]
+  (-> data
+      process-custom-fields-out
+      (process-date-out [:when :startDate] [:when :startTimezone])
+      (process-date-out [:when :endDate] [:when :endTimezone])
+      (dissoc :confeedence)))
+
+(defn event-submit-data [event-record app-db form-props data]
+  (let [schedule-id (get-in app-db [:route :data :id])
+        new? (not (boolean (:id data)))]
+    (if new?
+      (create-event (get-access-token app-db) schedule-id data)
+      (update-event (get-access-token app-db) schedule-id data))))
+
+(defn event-process-attr-with [event-record path]
+  (when (= path [:confeedence :has-end-date])
+    process-has-end-date))
+
+(defn event-get-data [event-record app-db form-props]
+  (let [id (last form-props)]
+    (if (= "new" id)
+      {:when {:period "minute"
+              :startDate (.now js/moment)
+              :startTimezone "US/Central"}
+       :confeedence {:has-end-date false
+                     :custom-fields {:type "event"}}}
+      (pipeline! [value app-db]
+        (dataloader-controller/wait-dataloader-pipeline!)
+        (get-item-by-id app-db :event id)))))
+
+(defn event-on-submit-success [event-record app-db form-props data]
+  (let [event-id (:id data)
+        events (get-collection app-db :event :current-schedule-events)
+        event-ids (set (map :id events))
+        new? (not (contains? event-ids event-id))]
+    (pp/commit! (if new?
+                  (append-collection app-db :event :current-schedule-events [data])
+                  (insert-item app-db :event data)))))
 
 (defrecord EventForm [validator]
   forms-core/IForm
   (process-out [this app-db form-props data]
-    (-> data
-        process-custom-fields-out
-        (process-date-out [:when :startDate] [:when :startTimezone])
-        (process-date-out [:when :endDate] [:when :endTimezone])
-        (dissoc :confeedence)))
-  (submit-data [_ app-db _ data]
-    (let [schedule-id (get-in app-db [:route :data :id])]
-      (create-event (get-access-token app-db) schedule-id data)))
-  (process-attr-with [_ path]
-    (when (= path [:confeedence :has-end-date])
-      process-has-end-date))
+    (event-process-out this app-db form-props data))
+  (submit-data [this app-db form-props data]
+    (event-submit-data this app-db form-props data))
+  (process-attr-with [this path]
+    (event-process-attr-with this path))
   (get-data [this app-db form-props]
-    (let [id (last form-props)]
-      (if (= "new" id)
-        {:when {:period "minute"
-                :startDate (.now js/moment)
-                :startTimezone "US/Central"}
-         :confeedence {:has-end-date false
-                       :custom-fields {:type "event"}}})))
+    (event-get-data this app-db form-props))
   (on-submit-success [this app-db form-props data]
-    (println "SUBMIT SUCCESS" data)))
+    (event-on-submit-success this app-db form-props data)))
 
-(defn constructor []
+(defn event-constructor []
   (->EventForm validator))
 

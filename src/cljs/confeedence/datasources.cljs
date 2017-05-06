@@ -28,7 +28,7 @@
                                      (when-let [access-token (get-in req [:params :access-token])]
                                        (load-schedules access-token))))}
 
-   :current-schedule-events {:target [:edb/collection :event/list]
+   :current-schedule-events {:target [:edb/collection :event/current-schedule-events]
                              :deps [:access-token]
                              :loader (map-loader
                                       (fn [req]
