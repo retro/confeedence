@@ -6,12 +6,14 @@
 
 (defelement -sidebar-form-wrap
   :style [{:min-width "400px"
+           :overflow-y "auto"
            :border-left (str "2px solid " (:grey colors-with-variations))}
           ])
 
 (defelement content-inner-wrap
   :class [:flex-auto :flex]
-  :style [{:max-width "100vw"}])
+  :style [{:max-width "100vw"
+           :overflow "hidden"}])
 
 (defn render [ctx]
   (let [access-token (sub> ctx :access-token)
