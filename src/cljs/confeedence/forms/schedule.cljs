@@ -38,9 +38,9 @@
 
                          "confeedence:events-heading-color:midnight-blue"
                          "confeedence:events-bg-color:clouds"
-                         "confeedence:events-timeline-bg:pomegranate"
+                         "confeedence:events-timeline-bg-color:pomegranate"
                          "confeedence:events-timeline-text-color:white"
-                         "confeedence:events-callout-bg:midnight-blue"
+                         "confeedence:events-callout-bg-color:midnight-blue"
                          "confeedence:events-callout-heading-color:sunflower"
                          "confeedence:events-callout-text-color:white"
 
