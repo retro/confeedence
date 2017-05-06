@@ -13,7 +13,7 @@
   :class [:flex :flex-column :height-full])
 
 (defelement navbar-wrap
-  :class [:absolute :z1 :border-bottom :bd-light-gray :bg-lightest-gray :px2 :flex :items-center :justify-between :relative]
+  :class [:absolute :z1 :border-bottom :bd-light-gray :bg-lightest-gray :px2 :flex :items-center :justify-start :relative]
   :style [{:height "78px"
            :width "100vw"
            :top 0}])
@@ -24,11 +24,11 @@
 
 (defelement menu
   :tag :ul
-  :class [:list-reset :flex :flex-row])
+  :class [:list-reset :flex :flex-row :m0])
 
 (defelement menu-item
   :tag :li
-  :class [:mx1 :py0-5])
+  :class [:mr2])
 
 (defelement menu-item-link
   :tag :a
@@ -84,6 +84,15 @@
   :tag :p
   :class [:c-small :c-semi-gray :my0-5 :italic])
 
+(defelement logo-wrap
+  :class [:mr6 :py1]
+  :style [{:height "100%"}])
+
+(defelement logo
+  :tag :img
+  :class [:fit]
+  :style [{:height "100%"}])
+
 (defn loading-access-token? [ctx]
   (let [status (:status (sub> ctx :access-token-meta))]
     (or (nil? status) (= :pending status))))
@@ -95,26 +104,29 @@
        [spinner 64 "#ff3300"]]
       [layout-wrap
        [navbar-wrap
-        [menu
+        [logo-wrap
+          [logo {:src "/images/logo.svg"}]]
+        [menu 
          [menu-item 
           [menu-item-link {:href (ui/url ctx {:page "home"})} "Home"]]
          [menu-item
           [menu-item-link {:href (ui/url ctx {:page "edit"})} "Admin"]]]
-        [profile-wrap
-         [profile-greeting (str "Hello " (get-in usr [:name :givenName]) ".")]
-         [profile-details
-          [profile-img {:src (:photo usr)}]
-          [profile-links-container
-           [spacer]
-           [profile-info-wrap
-            [profile-greeting-mobile (str "Hello " (get-in usr [:name :givenName]) ".")]
-            [profile-info (:email usr)]
-            [profile-info (str "Member since " (format-date (:createdAt usr)))]]
-           [profile-links-wrap
-            [link-item-wrap
-             [link-item "My events"]]
-            [link-item-wrap 
-             [link-item "Logout"]]]]]]]
+        (when usr
+          [profile-wrap
+           [profile-greeting (str "Hello " (get-in usr [:name :givenName]) ".")]
+           [profile-details
+            [profile-img {:src (:photo usr)}]
+            [profile-links-container
+             [spacer]
+             [profile-info-wrap
+              [profile-greeting-mobile (str "Hello " (get-in usr [:name :givenName]) ".")]
+              [profile-info (:email usr)]
+              [profile-info (str "Member since " (format-date (:createdAt usr)))]]
+             [profile-links-wrap
+              [link-item-wrap
+               [link-item "My events"]]
+              [link-item-wrap 
+               [link-item "Logout"]]]]]])]
        [page-wrap
         (case (:page (route> ctx))
           "homepage" [(ui/component ctx :page-homepage)]
