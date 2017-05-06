@@ -17,12 +17,15 @@
    [:.c-link {:font-family "'Raleway', sans-serif"
               :font-weight 200
               :font-size "3rem"}]
+   [:.c-large {:font-family "'Raleway', sans-serif"
+              :font-weight 400
+              :font-size "2.4rem"}]
    [:.c-small {:font-family "'Raleway', sans-serif"
               :font-weight 400
               :font-size "1.4rem"}]
    [:h1 {:font-family "'Open Sans', sans-serif"
          :font-weight 800
-         :font-size "2rem"}]
+         :font-size "3rem"}]
    [:h2 {:font-family "'Open Sans', sans-serif"
          :font-weight 700
          :font-size "1.5rem"}]
