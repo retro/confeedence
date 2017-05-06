@@ -21,11 +21,13 @@
         form-props [:news (or (get-in current-route [:form :id]) "new")]
         form-state @(forms-helpers/form-state ctx form-props)
         helpers (forms-helpers/make-component-helpers ctx form-props)
-        submit (:submit helpers)]
+        submit (:submit helpers)
+        new? (not (get-in form-state [:data :id]))]
     
     [:form.m4 {:on-submit submit}
+     [:h1 (if new? "Create a new news" "Update news")]
      (when (= :submit-failed (get-in form-state [:state :type]))
-       [:div.bg-red.c-white.p1.mb2 "We couldn't save the event"])
+       [:div.bg-red.c-white.p1.mb2 "We couldn't save the news item"])
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Name" :attr :name}]
      [controlled-textarea {:form-state form-state :helpers helpers :placeholder "Description" :attr :description}]
      [:hr]
