@@ -16,6 +16,34 @@
 (def theme-color-options
   (sort-by first (map (fn [c] [(:slug c) (:name c)]) theme-colors)))
 
+(def color-options
+  {:main {:main-heading-color "Main Heading Color"
+          :main-text-color "Main Text Color"
+          :main-bg-color "Main Background Color"}
+   :events {:events-heading-color "Events Heading Color"
+            :events-bg-color "Events Background Color"
+            :events-timeline-bg-color "Events - Timeline Background Color"
+            :events-timeline-text-color "Events - Timeline Text Color"
+            :events-callout-bg-color "Events - Callout Background Color"
+            :events-callout-heading-color "Events - Callout Heading Color"
+            :events-callout-text-color "Events - Callout Text Color"}
+   :talks {:talks-heading-color "Talks Heading Color"
+           :talks-bg-color "Talks Background Color"
+           :talks-track-bg-color "Talks - Track Background Color"
+           :talks-track-heading-color "Talks - Track Heading Color"
+           :talks-talk-heading-color "Talks - Talk Heading Color"
+           :talks-talk-text-color "Talks - Talk Text Color"}})
+
+(defn render-color-selects [form-state helpers options]
+  (into [:div]
+        (doall (map (fn [[attr label]]
+                      [controlled-select
+                       {:form-state form-state
+                        :helpers helpers
+                        :placeholder label
+                        :attr (str "confeedence-tags." (name attr))
+                        :options theme-color-options}]) options))))
+
 (defn render [ctx]
   (let [schedule-id (or (:id (route> ctx)) :new)
         form-props [:schedule schedule-id]
@@ -38,62 +66,11 @@
        :options (map (fn [v] [v v]) ["1" "2" "3" "4" "5"])}]
      (when (not new?)
        [:div
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Main Heading Color"
-          :attr :confeedence-tags.main-heading-color
-          :options theme-color-options}]
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Main Text Color"
-          :attr :confeedence-tags.main-text-color
-          :options theme-color-options}]
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Main Background Color"
-          :attr :confeedence-tags.main-bg-color
-          :options theme-color-options}]
+        [render-color-selects form-state helpers (:main color-options)]
         [:hr]
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Events Heading Color"
-          :attr :confeedence-tags.events-heading-color
-          :options theme-color-options}]
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Events Background Color"
-          :attr :confeedence-tags.events-bg-color
-          :options theme-color-options}]
+        [render-color-selects form-state helpers (:events color-options)]
         [:hr]
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Talks Heading Color"
-          :attr :confeedence-tags.talks-heading-color
-          :options theme-color-options}]
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Talks Background Color"
-          :attr :confeedence-tags.talks-bg-color
-          :options theme-color-options}]
-         [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Talks - Track Heading Color"
-          :attr :confeedence-tags.talks-track-heading-color
-          :options theme-color-options}]
-        [controlled-select
-         {:form-state form-state
-          :helpers helpers
-          :placeholder "Talks - Track Background Color"
-          :attr :confeedence-tags.talks-track-bg-color
-          :options theme-color-options}]])
+        [render-color-selects form-state helpers (:talks color-options)]])
      [-green-button "Save Conference"]]))
 
 (def component

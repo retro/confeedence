@@ -2,7 +2,8 @@
   (:require [keechma.ui-component :as ui]))
 
 (defn render [ctx]
-  [:div "SCHEDULE"])
+  [(ui/component ctx :schedule)])
 
 (def component
-  (ui/constructor {:renderer render}))
+  (ui/constructor {:renderer render
+                   :component-deps [:schedule]}))

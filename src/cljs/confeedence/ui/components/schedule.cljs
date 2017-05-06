@@ -143,7 +143,7 @@
                              (conj acc event-with-side))))
                        [] (map-indexed (fn [idx event] [idx event]) (sort-events events)))))
 
-(defn render-events [ctx events] 
+(defn render-events [ctx events show-action-links?] 
   (let [current-route (route> ctx)
         first-ev (first events)
         last-ev (last events)]
@@ -157,14 +157,15 @@
                [:br]
                [:p (:description e)]
                [:br]
-               [-action-link
-                {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
-                "Edit Event"]]
+               (when show-action-links?
+                 [-action-link
+                  {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
+                  "Edit Event"])]
               [date-circle
                (format-date (get-in e [:when :startDate]))]]) events))]))
 
 
-(defn render-talk [ctx conference talk]
+(defn render-talk [ctx conference talk show-action-links?]
   (let [current-route (route> ctx)]
     (let [photo-url (get-in talk [:confeedence :custom-fields :speaker-photo-url])]
       [:div.mb4
@@ -174,10 +175,11 @@
        [:div "Speaker Bio: " (get-in talk [:confeedence :custom-fields :speaker-bio])]
        [:img {:src (if (seq photo-url) photo-url "/img/avatar.png")
               :style {:height "40px" :width "40px"}}]
-       [:div
-        [-action-link {:href (ui/url ctx (assoc current-route :form {:type "talk" :id (:id talk)}))} "Edit Talk"]]])))
+       (when show-action-links?
+         [:div
+          [-action-link {:href (ui/url ctx (assoc current-route :form {:type "talk" :id (:id talk)}))} "Edit Talk"]])])))
 
-(defn render-talks [ctx conference track-name talks]
+(defn render-talks [ctx conference track-name talks show-action-links?]
   [:div.pb2
    {:key track-name
     :style {:background-color (get-color conference :talks-track-bg-color)
@@ -190,7 +192,7 @@
     [:div 
      (doall (map (fn [t]
                    ^{:key (:id t)}
-                   [render-talk ctx conference t]) talks))]]])
+                   [render-talk ctx conference t show-action-links?]) talks))]]])
 
 
 (defn render [ctx]
@@ -201,32 +203,36 @@
         track-count (js/parseInt (get-in conference [:confeedence-tags :track-count]))
         grouped-events (group-events (sub> ctx :current-schedule-events))
         timeline-events (prepare-timeline (concat (:event grouped-events) (:news grouped-events)))
-        grouped-talks (group-talks-by-track (sort-events (:talk grouped-events)) track-count)]
+        grouped-talks (group-talks-by-track (sort-events (:talk grouped-events)) track-count)
+        show-action-links? (= "edit" (:page current-route))]
 
     [main-wrap {:style {:background-color (get-color conference :main-bg-color)}}
      [conference-info-wrap
       [title-center {:style {:color (get-color conference :main-heading-color)}} (:name conference)]
       [conference-description {:style {:color (get-color conference :main-text-color)}} (:description conference)]
-      [center-div
-       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "conference"}))} "Edit Conference Info"]]]
+      (when show-action-links?
+        [center-div
+         [-action-link {:href (ui/url ctx (assoc current-route :form {:type "conference"}))} "Edit Conference Info"]])]
      [events-wrap {:style {:background-color (get-color conference :events-bg-color)}}
       [subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
-      [render-events ctx timeline-events]
-      [center-div
-       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"})) :class "mr1"} "Add New event"]
-       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "news"})) :class "ml1"} "Add News"]]]
+      [render-events ctx timeline-events show-action-links?]
+      (when show-action-links?
+        [center-div
+         [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"})) :class "mr1"} "Add New event"]
+         [-action-link {:href (ui/url ctx (assoc current-route :form {:type "news"})) :class "ml1"} "Add News"]])]
      [talks-wrap {:style {:background-color (get-color conference :talks-bg-color)}}
       [subtitle-center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
       [talks-column-wrap
        (doall (map (fn [idx]
                      ^{:key idx}
-                     [render-talks ctx conference (str "Track #" (inc idx)) (get grouped-talks (inc idx))])
+                     [render-talks ctx conference (str "Track #" (inc idx)) (get grouped-talks (inc idx)) show-action-links?])
                    (range 0 track-count)))
        (when (seq (:unassigned grouped-talks))
-         [render-talks ctx conference "Unassigned Talks" (:unassigned grouped-talks)])]
-      [:div.center.pb2 [-action-link
-                        {:href (ui/url ctx (assoc current-route :form {:type "talk"}))}
-                        "Add New Talk"]]]]))
+         [render-talks ctx conference "Unassigned Talks" (:unassigned grouped-talks) show-action-links?])]
+      (when show-action-links?
+        [:div.center.pb2 [-action-link
+                          {:href (ui/url ctx (assoc current-route :form {:type "talk"}))}
+                          "Add New Talk"]])]]))
 
 (def component
   (ui/constructor {:renderer render

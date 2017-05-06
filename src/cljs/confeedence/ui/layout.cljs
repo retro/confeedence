@@ -93,46 +93,55 @@
   :class [:fit]
   :style [{:height "100%"}])
 
+(defn render-user-info [ctx usr]
+  [profile-wrap
+   [profile-greeting (str "Hello " (get-in usr [:name :givenName]) ".")]
+   [profile-details
+    [profile-img {:src (:photo usr)}]
+    [profile-links-container
+     [spacer]
+     [profile-info-wrap
+      [profile-greeting-mobile (str "Hello " (get-in usr [:name :givenName]) ".")]
+      [profile-info (:email usr)]
+      [profile-info (str "Member since " (format-date (:createdAt usr)))]]
+     [profile-links-wrap
+      [link-item-wrap
+       [link-item "My events"]]
+      [link-item-wrap 
+       [link-item "Logout"]]]]]])
+
+(defn render-navbar [ctx usr]
+  [navbar-wrap
+   [logo-wrap
+    [logo {:src "/images/logo.svg"}]]
+   [menu 
+    [menu-item 
+     [menu-item-link {:href (ui/url ctx {:page "home"})} "Home"]]
+    [menu-item
+     [menu-item-link {:href (ui/url ctx {:page "edit"})} "Admin"]]]
+   (when usr
+     [render-user-info ctx usr])])
+
 (defn loading-access-token? [ctx]
   (let [status (:status (sub> ctx :access-token-meta))]
     (or (nil? status) (= :pending status))))
 
 (defn render [ctx]
-  (let [usr (sub> ctx :current-user)]
+  (let [usr (sub> ctx :current-user)
+        current-route (route> ctx)]
     (if (loading-access-token? ctx)
       [spinner-wrap
        [spinner 64 "#ff3300"]]
-      [layout-wrap
-       [navbar-wrap
-        [logo-wrap
-          [logo {:src "/images/logo.svg"}]]
-        [menu 
-         [menu-item 
-          [menu-item-link {:href (ui/url ctx {:page "home"})} "Home"]]
-         [menu-item
-          [menu-item-link {:href (ui/url ctx {:page "edit"})} "Admin"]]]
-        (when usr
-          [profile-wrap
-           [profile-greeting (str "Hello " (get-in usr [:name :givenName]) ".")]
-           [profile-details
-            [profile-img {:src (:photo usr)}]
-            [profile-links-container
-             [spacer]
-             [profile-info-wrap
-              [profile-greeting-mobile (str "Hello " (get-in usr [:name :givenName]) ".")]
-              [profile-info (:email usr)]
-              [profile-info (str "Member since " (format-date (:createdAt usr)))]]
-             [profile-links-wrap
-              [link-item-wrap
-               [link-item "My events"]]
-              [link-item-wrap 
-               [link-item "Logout"]]]]]])]
-       [page-wrap
-        (case (:page (route> ctx))
-          "homepage" [(ui/component ctx :page-homepage)]
-          "show"     [(ui/component ctx :page-schedule)]
-          "edit"     [(ui/component ctx :page-schedule-form)]
-          nil)]])))
+      (if (= "show" (:page current-route))
+        [(ui/component ctx :page-schedule)]
+
+        [layout-wrap
+         [render-navbar ctx usr]
+         [page-wrap
+          (case (:page current-route)
+            "homepage" [(ui/component ctx :page-homepage)]
+            "edit"     [(ui/component ctx :page-schedule-form)]
+            nil)]]))))
 
 (def component
   (ui/constructor {:renderer render
