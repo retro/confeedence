@@ -36,8 +36,7 @@
                       :params (fn [prev route {:keys [access-token]}]
                                 (let [page (:page route)
                                       id (:id route)
-                                      prev-schedule (:data prev)]
-                                  (println page id)
+                                      prev-schedule (:data prev)] 
                                   (when (and (or (= "show" page)
                                                  (= "edit" page))
                                              id)
