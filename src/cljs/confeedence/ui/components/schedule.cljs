@@ -33,7 +33,7 @@
      [:div {:style {:background-color (get-color conference :events-bg-color)}}
       [:h2.center {:style {:color (get-color conference :events-heading-color)}} "Events"]
       [:div.center
-       [-action-link {:href "#"} "Add New event"]]]
+       [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"}))} "Add New event"]]]
      [:div {:style {:background-color (get-color conference :talks-bg-color)}}
       [:h2.center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
       [:div.flex.justify-center
