@@ -5,9 +5,13 @@
             [confeedence.stylesheets.colors :refer [colors-with-variations]]))
 
 (defelement -sidebar-form-wrap
-  :style [{:width "400px"
+  :style [{:min-width "400px"
            :border-left (str "2px solid " (:grey colors-with-variations))}
           ])
+
+(defelement content-inner-wrap
+  :class [:flex-grow :flex]
+  :style [{:max-width "100vw"}])
 
 (defn render [ctx]
   (let [access-token (sub> ctx :access-token)
@@ -17,7 +21,7 @@
     [:div.flex-grow.flex
      (if access-token
        (if id
-         [:div.flex-grow.flex
+         [content-inner-wrap
           [(ui/component ctx :schedule)]
           (when form
             [-sidebar-form-wrap
@@ -26,7 +30,7 @@
                "conference" [(ui/component ctx :form-schedule)]
                "event" [(ui/component ctx :form-event)]
                nil)])]
-         [:div.flex-grow
+         [:div.flex-grow.flex
           [(ui/component ctx :schedule-list)]
           [(ui/component ctx :form-schedule)]])
        [(ui/component ctx :form-access-token)])]))
