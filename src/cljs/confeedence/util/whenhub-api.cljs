@@ -16,6 +16,12 @@
                           {:confeedence-tags {} :tags []} tags)]
     (merge schedule processed)))
 
+(defn process-event [event]
+  (let [has-end-date? (and (get-in event [:when :endDate]) (get-in event [:when :endTimezone]))
+        custom-fields (reduce (fn [acc {:keys [label value]}]
+                                (assoc acc (keyword label) value)) {} (flatten (vals (:customFieldData event))))]
+    (assoc event :confeedence {:has-end-date has-end-date? :custom-fields custom-fields})))
+
 (defn load-user-info [access-token]
   (GET "https://api.whenhub.com/api/users/me"
        {:params {:access_token access-token}
@@ -31,7 +37,7 @@
                :format :json
                :response-format :json
                :keywords? true})
-         (p/map (fn [schedules] (map process-schedule-tags schedules))))))
+         (p/map #(map process-schedule-tags %)))))
 
 (defn load-schedule-by-id [access-token id]
   (->> (GET (str "https://api.whenhub.com/api/users/me/schedules/" id)
@@ -59,16 +65,26 @@
          (p/map process-schedule-tags))))
 
 (defn create-event [access-token schedule-id data]
-  (POST (str "https://api.whenhub.com/api/schedules/" schedule-id "/events?access_token=" access-token)
-        {:params data
-         :format :json
-         :response-format :json
-         :keywords? true}))
+  (->> (POST (str "https://api.whenhub.com/api/schedules/" schedule-id "/events?access_token=" access-token)
+             {:params data
+              :format :json
+              :response-format :json
+              :keywords? true})
+       (p/map process-event)))
+
+(defn update-event [access-token schedule-id data]
+  (->> (PUT (str "https://api.whenhub.com/api/schedules/" schedule-id "/events/" (:id data) "?access_token=" access-token)
+             {:params data
+              :format :json
+              :response-format :json
+              :keywords? true})
+       (p/map process-event)))
 
 
 (defn load-events [access-token schedule-id]
-  (GET (str "https://api.whenhub.com/api/schedules/" schedule-id "/events")
-        {:params {:access_token access-token}
-         :format :json
-         :response-format :json
-         :keywords? true}))
+  (->> (GET (str "https://api.whenhub.com/api/schedules/" schedule-id "/events")
+            {:params {:access_token access-token}
+             :format :json
+             :response-format :json
+             :keywords? true})
+       (p/map #(map process-event %))))

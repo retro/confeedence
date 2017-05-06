@@ -6,7 +6,7 @@
 (def forms
   {:access-token (access-token/constructor)
    :schedule (schedule/constructor)
-   :event (event/constructor)})
+   :event (event/event-constructor)})
 
 (def forms-params
   {:access-token (fn [{:keys [page]}]
