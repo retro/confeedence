@@ -13,7 +13,7 @@
   :class [:flex :flex-column :height-full])
 
 (defelement navbar-wrap
-  :class [:border-bottom :bd-lighter-gray :bg-lightest-gray :px2 :flex :items-center :justify-between :relative])
+  :class [:border-bottom :bd-light-gray :bg-lightest-gray :px2 :flex :items-center :justify-between :relative])
 
 (defelement page-wrap
   :class [:flex-grow :flex])
@@ -31,7 +31,7 @@
   :class [:text-decoration-none :c-link :c-semi-gray :c-h-dark :pointer :uppercase])
 
 (defelement profile-wrap
-  :class [:absolute :right-0 :flex :flex-row :items-center :pr2]
+  :class [:absolute :right-0 :flex :flex-row :items-center]
   :style [{:height "100%"}])
 
 (defelement profile-greeting
@@ -47,23 +47,23 @@
            :height "5rem"}])
 
 (defelement profile-details
-  :class [:flex :flex-column :items-center :pointer]
+  :class [:flex :flex-column :items-center :pointer :pr2]
   :style [[:&:hover>div {:top "6.4rem"
                          :visibility "visible"}]])
 
 (defelement profile-links-container
-  :class [:absolute :bg-lightest-gray]
-  :style [{:width "40rem"
+  :class [:absolute :bg-lightest-gray :right-0]
+  :style [{:width "25rem"
            :visibility "hidden"}])
 
 (defelement spacer
-  :class [:block :border-bottom :bd-lighter-gray]
+  :class [:block :border-bottom :bd-light-gray]
   :style [{:height "1.4rem"
            :width "100%"}])
 
 (defelement profile-links-wrap
   :tag :ul
-  :class [:list-reset :flex :flex-column :m0 :border :bd-lighter-gray])
+  :class [:list-reset :flex :flex-column :m0 :border :bd-light-gray])
 
 (defelement link-item-wrap
   :tag :li
@@ -74,7 +74,7 @@
   :class [:text-decoration-none :c-body :c-semi-gray :c-h-dark :pointer])
 
 (defelement profile-info-wrap
-  :class [:p2 :border-left :border-right :bd-lighter-gray])
+  :class [:p2 :border-left :border-right :bd-light-gray])
 
 (defelement profile-info
   :tag :p
@@ -105,7 +105,7 @@
            [profile-info-wrap
             [profile-greeting-mobile (str "Hello " (get-in usr [:name :givenName]) ".")]
             [profile-info (:email usr)]
-            [profile-info (str "Member since" (format-date (:createdAt usr)))]]
+            [profile-info (str "Member since " (format-date (:createdAt usr)))]]
            [profile-links-wrap
             [link-item-wrap
              [link-item "My events"]]
