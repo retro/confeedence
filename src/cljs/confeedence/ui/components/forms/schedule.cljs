@@ -14,9 +14,7 @@
   :class [:p2 :mx-auto :max-width-4 :flex-auto])
 
 (def theme-color-options
-  (map (fn [c] [(:slug c) (:name c)]) theme-colors))
-
-
+  (sort-by first (map (fn [c] [(:slug c) (:name c)]) theme-colors)))
 
 (defn render [ctx]
   (let [schedule-id (or (:id (route> ctx)) :new)

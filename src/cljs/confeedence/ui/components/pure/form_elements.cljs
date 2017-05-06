@@ -4,7 +4,8 @@
             [keechma.toolbox.forms.helpers :as forms-helpers]
             [confeedence.forms.validators :as validators]
             [reagent.core :as r]
-            [cljsjs.react-datetime]))
+            [cljsjs.react-datetime]
+            [cljsjs.moment]))
 
 (defelement -input
   :tag :input
@@ -91,7 +92,7 @@
     [:div.mb2
      [-label (or placeholder label)]
      [-datetime-input-wrap {:key [time-format date-format]}
-      [:> js/Datetime {:value (forms-helpers/attr-get-in form-state attr)
+      [:> js/Datetime {:value (js/moment (forms-helpers/attr-get-in form-state attr))
                        :on-change #(set-value attr %)
                        :time-format time-format
                        :date-format date-format
