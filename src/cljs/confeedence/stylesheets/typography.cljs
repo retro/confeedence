@@ -13,10 +13,13 @@
                     :font-size "1.25rem"}]
    [:.c-body {:font-family "'Raleway', sans-serif"
               :font-weight 400
-              :font-size "1rem"}]
+              :font-size "1.6rem"}]
    [:.c-link {:font-family "'Raleway', sans-serif"
               :font-weight 200
               :font-size "3rem"}]
+   [:.c-small {:font-family "'Raleway', sans-serif"
+              :font-weight 400
+              :font-size "1.4rem"}]
    [:h1 {:font-family "'Open Sans', sans-serif"
          :font-weight 800
          :font-size "2rem"}]
@@ -26,4 +29,5 @@
    [:h3 {:font-family "'Open Sans', sans-serif"
          :font-weight 600
          :font-size "1.25rem"}]
-   [:.uppercase {:text-transform "uppercase"}]])
+   [:.uppercase {:text-transform "uppercase"}]
+   [:.pointer {:cursor "pointer"}]])
