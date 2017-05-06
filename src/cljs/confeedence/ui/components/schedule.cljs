@@ -9,8 +9,7 @@
   :tag :a
   :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block])
 
-(defelement main-wrap
-  :class [:flex-grow])
+(defelement main-wrap)
 
 (defelement center-div
   :class [:center])
@@ -43,8 +42,7 @@
   (let [val (get-tag conference tag)]
     (get theme-colors-by-slug val)))
 
-(defn render-events [ctx events]
-  (println events)
+(defn render-events [ctx events] 
   (let [current-route (route> ctx)]
     [:ul
      (doall (map (fn [e]
