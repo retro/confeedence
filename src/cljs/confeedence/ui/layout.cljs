@@ -16,7 +16,7 @@
   :class [:border-bottom :bd-light-gray :bg-lightest-gray :px2 :flex :items-center :justify-between :relative])
 
 (defelement page-wrap
-  :class [:flex-grow :flex])
+  :class [:flex-auto :flex])
 
 (defelement menu
   :tag :ul

@@ -10,7 +10,7 @@
           ])
 
 (defelement content-inner-wrap
-  :class [:flex-grow :flex]
+  :class [:flex-auto :flex]
   :style [{:max-width "100vw"}])
 
 (defn render [ctx]
@@ -18,7 +18,7 @@
         current-route (route> ctx)
         id (:id current-route)
         form (:form current-route)]
-    [:div.flex-grow.flex
+    [:div.flex-auto.flex
      (if access-token
        (if id
          [content-inner-wrap
@@ -30,7 +30,7 @@
                "conference" [(ui/component ctx :form-schedule)]
                "event" [(ui/component ctx :form-event)]
                nil)])]
-         [:div.flex-grow.flex
+         [:div.flex-auto.flex
           [(ui/component ctx :schedule-list)]
           [(ui/component ctx :form-schedule)]])
        [(ui/component ctx :form-access-token)])]))

@@ -9,12 +9,14 @@
   :tag :a
   :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block])
 
-(defelement main-wrap)
+(defelement main-wrap
+  :class [:relative :flex :flex-wrap :flex-column :flex-auto])
 
 (defelement center-div
   :class [:center])
 
-(defelement conference-info-wrap)
+(defelement conference-info-wrap
+  :class [:flex :flex-column])
 
 (defelement title-center
   :tag :h1
@@ -22,7 +24,7 @@
 
 (defelement conference-description
   :tag :p
-  :class [:c-large :center])
+  :class [:c-large :center :px4])
 
 (defelement events-wrap)
 
