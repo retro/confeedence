@@ -1,15 +1,19 @@
 (ns confeedence.ui.components.schedule
   (:require [keechma.ui-component :as ui]
             [keechma.toolbox.ui :refer [sub> route>]]
-            [keechma.toolbox.css.core :refer-macros [defelement]]))
+            [keechma.toolbox.css.core :refer-macros [defelement]]
+            [keechma.toolbox.forms.helpers :as forms-helpers]))
 
 (defelement -action-link
   :tag :a
   :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block])
 
+
 (defn render [ctx]
-  (let [conference (sub> ctx :current-schedule)
-        current-route (route> ctx)
+  (let [current-route (route> ctx)
+        form-props [:schedule (:id current-route)]
+        form-data (:data @(forms-helpers/form-state ctx form-props))
+        conference (or form-data (sub> ctx :current-schedule))
         track-count (js/parseInt (get-in conference [:confeedence-tags :track-count]))]
     [:div.flex-grow
      [:h1.center (:name conference)]
@@ -31,4 +35,4 @@
 
 (def component
   (ui/constructor {:renderer render
-                   :subscription-deps [:current-schedule]}))
+                   :subscription-deps [:current-schedule :form-state]}))
