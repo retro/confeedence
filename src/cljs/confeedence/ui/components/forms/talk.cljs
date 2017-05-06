@@ -16,7 +16,6 @@
             [confeedence.static-data :refer [timezones]]
             [confeedence.ui.components.forms.event-shared :refer [time-period-opts get-date-format get-time-format]]))
 
-
 (defn render [ctx]
   (let [current-route (route> ctx)
         form-props [:talk (or (get-in current-route [:form :id]) "new")]
@@ -27,7 +26,7 @@
         track-count (js/parseInt (get-in conference [:confeedence-tags :track-count]))
         new? (not (get-in form-state [:data :id]))]
     
-    [:form.m4 {:on-submit submit}
+    [:form.p2.mx-auto.max-width-4.flex-auto {:on-submit submit}
      [:h1 (if new? "Create a new talk" "Update talk")]
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "We couldn't save the talk"])

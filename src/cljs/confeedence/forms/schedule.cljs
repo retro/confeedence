@@ -32,23 +32,23 @@
 (defn add-default-colors [data]
   (let [tags (:tags data)]
     (assoc data :tags
-           (concat tags ["confeedence:main-heading-color:pomegranate"
-                         "confeedence:main-text-color:clouds"
-                         "confeedence:main-bg-color:midnight-blue"
+           (concat tags ["confeedence:main-heading-color:alizarin"
+                         "confeedence:main-text-color:asbestos"
+                         "confeedence:main-bg-color:dark-gray"
 
-                         "confeedence:events-heading-color:midnight-blue"
-                         "confeedence:events-bg-color:clouds"
+                         "confeedence:events-heading-color:white"
+                         "confeedence:events-bg-color:belize-hole"
                          "confeedence:events-timeline-bg-color:pomegranate"
                          "confeedence:events-timeline-text-color:white"
                          "confeedence:events-callout-bg-color:midnight-blue"
-                         "confeedence:events-callout-heading-color:sunflower"
+                         "confeedence:events-callout-heading-color:alizarin"
                          "confeedence:events-callout-text-color:white"
 
-                         "confeedence:talks-heading-color:sun-flower"
-                         "confeedence:talks-bg-color:wet-asphalt"
-                         "confeedence:talks-track-bg-color:midnight-blue"
-                         "confeedence:talks-track-heading-color:pomegranate"
-                         "confeedence:talks-talk-heading-color:sunflower"
+                         "confeedence:talks-heading-color:white"
+                         "confeedence:talks-bg-color:alizarin"
+                         "confeedence:talks-track-bg-color:dark-gray"
+                         "confeedence:talks-track-heading-color:alizarin"
+                         "confeedence:talks-talk-heading-color:belize-hole"
                          "confeedence:talks-talk-text-color:white"]))))
 
 (defn add-calendar [data]

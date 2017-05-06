@@ -66,6 +66,7 @@
        :options (map (fn [v] [v v]) ["1" "2" "3"])}]
      (when (not new?)
        [:div
+        [:hr]
         [render-color-selects form-state helpers (:main color-options)]
         [:hr]
         [render-color-selects form-state helpers (:events color-options)]

@@ -23,7 +23,8 @@
 
 (defelement main-wrap
   :class [:relative :flex :flex-column :flex-auto]
-  :style [{:overflow-y "auto"}])
+  :style [{:overflow-y "auto"
+           :min-height "100%"}])
 
 (defelement center-div
   :class [:center])
@@ -33,7 +34,8 @@
 
 (defelement title-center
   :tag :h1
-  :class [:center :mt0 :mb1])
+  :class [:center :mt0 :mb1]
+  :style {:font-size "8rem"})
 
 (defelement conference-description
   :tag :p
@@ -189,7 +191,8 @@
                {:style {:background-color (get-color conference :events-callout-bg-color)
                         :color (get-color conference :events-callout-bg-color)}}
                [event-title {:style {:color (get-color conference :events-callout-heading-color)}} (:name e)]
-               [event-description {:style {:color (get-color conference :events-callout-text-color)}} (:description e)]
+               (when (seq (:description e))
+                 [event-description {:style {:color (get-color conference :events-callout-text-color)}} (:description e)])
                (when show-action-links?
                  [-action-link
                   {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
@@ -199,11 +202,12 @@
                (format-date (get-in e [:when :startDate]))]]) events))]))
 
 
-(defn render-talk [ctx conference talk show-action-links?]
-  (let [current-route (route> ctx)]
+(defn render-talk [ctx conference talk last-talk show-action-links?]
+  (let [current-route (route> ctx)
+        last? (= talk last-talk)]
     (let [photo-url (get-in talk [:confeedence :custom-fields :speaker-photo-url])]
-      [:div.pb3.px2 {:style {:border-bottom "1px solid"
-                             :border-bottom-color (get-color conference :talks-bg-color)}}
+      [:div.pb3.px2 (when (not last?) {:style {:border-bottom "1px solid"
+                                               :border-bottom-color (get-color conference :talks-bg-color)}})
        [:p.c-large.mb1 {:style {:color (get-color conference :talks-talk-heading-color)}} (:name talk)]
        [:p.c-small.m0-5.italic {:style {:color (get-color conference :talks-talk-text-color)}} (format-date (get-in talk [:when :startDate]))]
        [:p.c-small.m0.italic {:style {:color (get-color conference :talks-talk-text-color)}} (str (format-time-only (get-in talk [:when :startDate])) " - " (format-time-only (get-in talk [:when :endDate])))]
@@ -219,16 +223,17 @@
           [-action-link {:href (ui/url ctx (assoc current-route :form {:type "talk" :id (:id talk)}))} "Edit Talk"]])])))
 
 (defn render-talks [ctx conference track-name talks show-action-links?]
-  [talk-wrap
-   {:key track-name
-    :style {:background-color (get-color conference :talks-track-bg-color)}} 
-   [:h2
-    {:style {:color (get-color conference :talks-track-heading-color)}}
-    track-name]
-   [:div 
-    (doall (map (fn [t]
-                  ^{:key (:id t)}
-                  [render-talk ctx conference t show-action-links?]) talks))]])
+  (let [last-talk (last talks)]
+    [talk-wrap
+     {:key track-name
+      :style {:background-color (get-color conference :talks-track-bg-color)}} 
+     [:h2
+      {:style {:color (get-color conference :talks-track-heading-color)}}
+      track-name]
+     [:div 
+      (doall (map (fn [t]
+                    ^{:key (:id t)}
+                    [render-talk ctx conference t last-talk show-action-links?]) talks))]]))
 
 
 (defn render [ctx]

@@ -24,7 +24,7 @@
         submit (:submit helpers)
         new? (not (get-in form-state [:data :id]))]
     
-    [:form.m4 {:on-submit submit}
+    [:form.p2.mx-auto.max-width-4.flex-auto {:on-submit submit}
      [:h1 (if new? "Create a new event" "Update event")]
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "We couldn't save the event"])
