@@ -9,6 +9,33 @@
   :tag :a
   :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block])
 
+(defelement main-wrap
+  :class [:flex-grow])
+
+(defelement center-div
+  :class [:center])
+
+(defelement conference-info-wrap)
+
+(defelement title-center
+  :tag :h1
+  :class [:center])
+
+(defelement conference-description
+  :tag :p
+  :class [:c-large :center])
+
+(defelement events-wrap)
+
+(defelement subtitle-center
+  :tag :h2
+  :class [:center])
+
+(defelement talks-wrap)
+
+(defelement talks-column-wrap
+  :class [:flex :justify-center])
+
 (defn get-tag [conference tag]
   (get-in conference [:confeedence-tags tag]))
 
@@ -24,19 +51,19 @@
         track-count (js/parseInt (get-in conference [:confeedence-tags :track-count]))]
 
 
-    [:div.flex-grow {:style {:background-color (get-color conference :main-bg-color)}}
-     [:div 
-      [:h1.center {:style {:color (get-color conference :main-heading-color)}} (:name conference)]
-      [:p.center {:style {:color (get-color conference :main-text-color)}} (:description conference)]
-      [:div.center
+    [main-wrap {:style {:background-color (get-color conference :main-bg-color)}}
+     [conference-info-wrap
+      [title-center {:style {:color (get-color conference :main-heading-color)}} (:name conference)]
+      [conference-description {:style {:color (get-color conference :main-text-color)}} (:description conference)]
+      [center-div
        [-action-link {:href (ui/url ctx (assoc current-route :form {:type "conference"}))} "Edit Conference Info"]]]
-     [:div {:style {:background-color (get-color conference :events-bg-color)}}
-      [:h2.center {:style {:color (get-color conference :events-heading-color)}} "Events"]
-      [:div.center
+     [events-wrap {:style {:background-color (get-color conference :events-bg-color)}}
+      [subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
+      [center-div
        [-action-link {:href "#"} "Add New event"]]]
-     [:div {:style {:background-color (get-color conference :talks-bg-color)}}
-      [:h2.center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
-      [:div.flex.justify-center
+     [talks-wrap {:style {:background-color (get-color conference :talks-bg-color)}}
+      [subtitle-center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
+      [talks-column-wrap
        (doall (map (fn [idx]
                      [:div.pb2
                       {:key idx
