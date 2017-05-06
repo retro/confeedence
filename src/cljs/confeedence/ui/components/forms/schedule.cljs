@@ -1,5 +1,6 @@
 (ns confeedence.ui.components.forms.schedule
   (:require [keechma.ui-component :as ui]
+            [keechma.toolbox.css.core :refer-macros [defelement]]
             [confeedence.ui.components.pure.form-elements :refer
              [controlled-input controlled-select controlled-textarea  -green-button]]
             [keechma.toolbox.forms.core :as forms-core]
@@ -7,6 +8,10 @@
             [confeedence.forms.validators :as validators]
             [keechma.toolbox.ui :refer [route>]]
             [confeedence.stylesheets.colors :refer [theme-colors]]))
+
+(defelement form-wrap
+  :tag :form
+  :class [:p2 :mx-auto :max-width-4 :flex-auto])
 
 (def theme-color-options
   (map (fn [c] [(:slug c) (:name c)]) theme-colors))
@@ -21,7 +26,7 @@
         submit (:submit helpers)
         new? (not (get-in form-state [:data :id]))]
    
-    [:form.m4 {:on-submit submit}
+    [form-wrap {:on-submit submit}
      [:h1 (if new? "Create a new conference" "Update conference")]
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "We couldn't save the conference"])
