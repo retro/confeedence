@@ -63,7 +63,7 @@
        :helpers helpers
        :placeholder "Number of Tracks"
        :attr :confeedence-tags.track-count
-       :options (map (fn [v] [v v]) ["1" "2" "3" "4" "5"])}]
+       :options (map (fn [v] [v v]) ["1" "2" "3"])}]
      (when (not new?)
        [:div
         [render-color-selects form-state helpers (:main color-options)]

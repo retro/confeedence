@@ -4,13 +4,13 @@
 (defn stylesheet []
   [[:.c-title {:font-family "'Open Sans', sans-serif"
                :font-weight 800
-               :font-size "3rem"}]
+               :font-size "4rem"}]
    [:.c-subtitle {:font-family "'Open Sans', sans-serif"
                   :font-weight 700
-                  :font-size "2.25rem"}]
+                  :font-size "3.25rem"}]
    [:.c-emphasized {:font-family "'Open Sans', sans-serif"
                     :font-weight 600
-                    :font-size "1.75rem"}]
+                    :font-size "2.75rem"}]
    [:.c-button {:font-family "'Open Sans', sans-serif"
                 :font-weight 800
                 :font-size "1.5rem"
@@ -32,12 +32,12 @@
               :font-size "1.4rem"}]
    [:h1 {:font-family "'Open Sans', sans-serif"
          :font-weight 800
-         :font-size "3rem"}]
+         :font-size "4rem"}]
    [:h2 {:font-family "'Open Sans', sans-serif"
          :font-weight 700
-         :font-size "2.25rem"}]
+         :font-size "3.25rem"}]
    [:h3 {:font-family "'Open Sans', sans-serif"
          :font-weight 600
-         :font-size "1.5rem"}]
+         :font-size "2.5rem"}]
    [:.uppercase {:text-transform "uppercase"}]
    [:.pointer {:cursor "pointer"}]])

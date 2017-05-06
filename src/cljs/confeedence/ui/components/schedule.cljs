@@ -11,6 +11,12 @@
 (defn format-date [date]
   (.format (js/moment date) "ll"))
 
+(defn format-full-date [date]
+  (.format (js/moment date) "llll"))
+
+(defn format-time-only [date]
+  (.format (js/moment date) "hh:mm a"))
+
 (defelement -action-link
   :tag :a
   :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block :border-width-2 :bd-white :border])
@@ -31,7 +37,8 @@
 
 (defelement conference-description
   :tag :p
-  :class [:c-large :center :px4])
+  :class [:c-large :center :px4 :mx-auto]
+  :style [{:max-width "120rem"}])
 
 (defelement events-wrap
   :class [:pb4])
@@ -53,7 +60,8 @@
 
 (defelement timeline-wrap
   :tag :ul
-  :class [:max-width-4 :mx-auto :clearfix :list-reset :relative])
+  :class [:mx-auto :clearfix :list-reset :relative]
+  :style [{:max-width "120rem"}])
 
 (defelement timeline-item
   :tag :li
@@ -72,10 +80,9 @@
 (defelement timeline-item-wrap-left
   :class [:bg-lightest-gray :left :px2 :py1 :relative]
   :style [{:border-radius "0.2rem"
-           :width "38%"
-           :min-height "10rem"
-           :margin-left "3%"
-           :margin-right "9%"}
+           :width "42%"
+           :min-height "7rem"
+           :margin-left "3%"}
           [:&:after {:content "''"
                      :display "block"
                      :position "absolute"
@@ -93,9 +100,8 @@
 (defelement timeline-item-wrap-right
   :class [:bg-lightest-gray :right :px2 :py1 :relative]
   :style [{:border-radius "0.2rem"
-           :width "38%"
-           :min-height "10rem"
-           :margin-left "9%"
+           :width "42%"
+           :min-height "7rem"
            :margin-right "3%"}
           [:&:before {:content "''"
                       :display "block"
@@ -116,7 +122,12 @@
   :class [:mt0 :mb0])
 
 (defelement event-description
-  :tag :p)
+  :tag :p
+  :class [:mt0-5])
+
+(defelement talk-wrap
+  :class [:my0 :mx2 :center]
+  :style [{:width "350px"}])
 
 (defn group-events [events]
   (reduce (fn [acc e]
@@ -191,31 +202,33 @@
 (defn render-talk [ctx conference talk show-action-links?]
   (let [current-route (route> ctx)]
     (let [photo-url (get-in talk [:confeedence :custom-fields :speaker-photo-url])]
-      [:div.mb4
-       [:div "Talk Name: "  (:name talk)]
-       [:div "Description: " (get-in talk [:confeedence :custom-fields :description])]
-       [:div "Speaker Name: " (get-in talk [:confeedence :custom-fields :speaker-name])]
-       [:div "Speaker Bio: " (get-in talk [:confeedence :custom-fields :speaker-bio])]
+      [:div.pb3.px2 {:style {:border-bottom "1px solid"
+                             :border-bottom-color (get-color conference :talks-bg-color)}}
+       [:p.c-large.mb1 {:style {:color (get-color conference :talks-talk-heading-color)}} (:name talk)]
+       [:p.c-small.m0-5.italic {:style {:color (get-color conference :talks-talk-text-color)}} (format-date (get-in talk [:when :startDate]))]
+       [:p.c-small.m0.italic {:style {:color (get-color conference :talks-talk-text-color)}} (str (format-time-only (get-in talk [:when :startDate])) " - " (format-time-only (get-in talk [:when :endDate])))]
+       [:p.c-medium {:style {:color (get-color conference :talks-talk-text-color)}} (get-in talk [:confeedence :custom-fields :description])]
        [:img {:src (if (seq photo-url) photo-url "/img/avatar.png")
-              :style {:height "40px" :width "40px"}}]
+              :class "circle"
+              :style {:height "5rem" 
+                      :width "5rem"}}]
+       [:p.c-body.my0-5 {:style {:color (get-color conference :talks-talk-heading-color)}} (get-in talk [:confeedence :custom-fields :speaker-name])]
+       [:p.c-body.my0-5 {:style {:color (get-color conference :talks-talk-heading-color)}} (get-in talk [:confeedence :custom-fields :speaker-bio])] 
        (when show-action-links?
-         [:div
+         [:div.mt2
           [-action-link {:href (ui/url ctx (assoc current-route :form {:type "talk" :id (:id talk)}))} "Edit Talk"]])])))
 
 (defn render-talks [ctx conference track-name talks show-action-links?]
-  [:div.pb2
+  [talk-wrap
    {:key track-name
-    :style {:background-color (get-color conference :talks-track-bg-color)
-            :width "300px"
-            :margin "0 20px"}}
-   [:div.center
-    [:h3
-     {:style {:color (get-color conference :talks-track-heading-color)}}
-     track-name]
-    [:div 
-     (doall (map (fn [t]
-                   ^{:key (:id t)}
-                   [render-talk ctx conference t show-action-links?]) talks))]]])
+    :style {:background-color (get-color conference :talks-track-bg-color)}} 
+   [:h2
+    {:style {:color (get-color conference :talks-track-heading-color)}}
+    track-name]
+   [:div 
+    (doall (map (fn [t]
+                  ^{:key (:id t)}
+                  [render-talk ctx conference t show-action-links?]) talks))]])
 
 
 (defn render [ctx]
