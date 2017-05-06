@@ -4,3 +4,4 @@
 /resources/public/js/compiled
 out
 /checkouts
+*.DS_Store
