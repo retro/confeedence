@@ -7,10 +7,14 @@
                :font-size "3rem"}]
    [:.c-subtitle {:font-family "'Open Sans', sans-serif"
                   :font-weight 700
-                  :font-size "1.5rem"}]
+                  :font-size "2.25rem"}]
    [:.c-emphasized {:font-family "'Open Sans', sans-serif"
                     :font-weight 600
-                    :font-size "1.25rem"}]
+                    :font-size "1.75rem"}]
+   [:.c-button {:font-family "'Open Sans', sans-serif"
+                :font-weight 800
+                :font-size "1.5rem"
+                :line-height "1.75rem"}]
    [:.c-body {:font-family "'Raleway', sans-serif"
               :font-weight 400
               :font-size "1.6rem"}]
@@ -28,7 +32,7 @@
          :font-size "3rem"}]
    [:h2 {:font-family "'Open Sans', sans-serif"
          :font-weight 700
-         :font-size "1.5rem"}]
+         :font-size "2.25rem"}]
    [:h3 {:font-family "'Open Sans', sans-serif"
          :font-weight 600
          :font-size "1.25rem"}]
