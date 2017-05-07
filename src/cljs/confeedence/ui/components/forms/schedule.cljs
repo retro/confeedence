@@ -2,7 +2,7 @@
   (:require [keechma.ui-component :as ui]
             [keechma.toolbox.css.core :refer-macros [defelement]]
             [confeedence.ui.components.pure.form-elements :refer
-             [controlled-input controlled-select controlled-textarea  -green-button]]
+             [controlled-input controlled-select controlled-textarea controlled-swatch-picker -green-button]]
             [keechma.toolbox.forms.core :as forms-core]
             [keechma.toolbox.forms.helpers :as forms-helpers]
             [confeedence.forms.validators :as validators]
@@ -37,12 +37,11 @@
 (defn render-color-selects [form-state helpers options]
   (into [:div]
         (doall (map (fn [[attr label]]
-                      [controlled-select
+                      [controlled-swatch-picker
                        {:form-state form-state
                         :helpers helpers
                         :placeholder label
-                        :attr (str "confeedence-tags." (name attr))
-                        :options theme-color-options}]) options))))
+                        :attr (str "confeedence-tags." (name attr))}]) options))))
 
 (defn render [ctx]
   (let [schedule-id (or (:id (route> ctx)) :new)

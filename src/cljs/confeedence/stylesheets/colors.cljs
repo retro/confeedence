@@ -90,6 +90,9 @@
 (def theme-colors-by-slug
   (reduce (fn [acc c] (assoc acc (:slug c) (:color c))) {} theme-colors))
 
+(def theme-color-names-by-slug
+  (reduce (fn [acc c] (assoc acc (:slug c) (:name c))) {} theme-colors))
+
 (defn stylesheet [] [[:.bg-transparent {:background 'transparent}]
                      (gen-colors-styles "bg" :background-color)
                      (gen-colors-styles "c" :color)

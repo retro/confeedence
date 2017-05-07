@@ -5,7 +5,9 @@
             [confeedence.forms.validators :as validators]
             [reagent.core :as r]
             [cljsjs.react-datetime]
-            [cljsjs.moment]))
+            [cljsjs.moment]
+            [confeedence.stylesheets.colors :refer [theme-colors theme-colors-by-slug theme-color-names-by-slug]]
+            [garden.color :as color]))
 
 (defelement -input
   :tag :input
@@ -136,3 +138,47 @@
                       [:optgroup {:key label :label label}
                        (doall (map (fn [o]
                                      [:option {:value (first o) :key (first o)} (last o)]) opts))])) options))]]))
+
+(defelement -swatch
+  :class [:pill :inline-block :mr1 :border :cursor-pointer]
+  :style [{:width "16px" :height "16px"}
+          [:&:hover {:border-width "2px"}]])
+
+(defelement -swatch-wrap
+  :class [:mb2 :cursor-pointer]
+  :style [[:&:hover [:.dropdown {:display "block"}]]
+          [:.dropdown {:display "none"}]])
+
+(defelement -swatch-dropdown
+  :class [:absolute :dropdown :bg-white :mr2 :p1 :bg-lightest-gray]
+  :style [])
+
+
+(defn get-swatch-border-color [background-color]
+  (color/as-hex (color/darken background-color 10)))
+
+(def theme-color-options
+  (sort-by first (map (fn [c] [(:slug c) (:name c)]) theme-colors)))
+
+(defn controlled-swatch-picker [{:keys [form-state helpers placeholder label attr]}]
+  (let [set-value (:set-value helpers)
+        value (forms-helpers/attr-get-in form-state (keyword attr))
+        current-color (get theme-colors-by-slug value)]
+   [-swatch-wrap
+    [-faux-label
+     (or placeholder label)]
+    [:div.border.bd-lighter-gray.p0-5.rounded.relative.clearfix
+     (if (seq value)
+       [:span
+        [-swatch {:style {:background-color current-color
+                          :border-color (get-swatch-border-color current-color)
+                          :float "left"
+                          :margin-top "1px"} }]
+        (get theme-color-names-by-slug value)]
+       "Please Select")]
+    [-swatch-dropdown
+     (doall (map (fn [c]
+                   [-swatch {:key (:slug c)
+                             :style {:background-color (:color c)
+                                     :border-color (get-swatch-border-color (:color c))}
+                             :on-click #(set-value attr (:slug c))}]) theme-colors))]]))
