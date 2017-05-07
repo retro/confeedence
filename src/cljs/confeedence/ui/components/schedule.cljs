@@ -85,7 +85,7 @@
   :style [{:border-radius "0.2rem"
            :width "42%"
            :min-height "7rem"
-           :margin-left "3%"}
+           :margin-left "calc(7% - 5rem)"}
           [:&:after {:content "''"
                      :display "block"
                      :position "absolute"
@@ -105,7 +105,7 @@
   :style [{:border-radius "0.2rem"
            :width "42%"
            :min-height "7rem"
-           :margin-right "3%"}
+           :margin-right "calc(7% - 5rem)"}
           [:&:before {:content "''"
                       :display "block"
                       :position "absolute"
