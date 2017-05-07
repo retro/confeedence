@@ -37,3 +37,9 @@ It's using custom fields to store different data for each one of them. For insta
 - Track
 
 Since we wanted to ensure that the data created through Confeedence app looks good in WhenHub, we compile all of this data and generate the HTML that gets stored in the (built-in) description field.
+
+## Running the app locally
+
+- Clone the repository
+- Install [Leiningen](https://leiningen.org/)
+- Run `$ lein figwheel dev` from the project root
