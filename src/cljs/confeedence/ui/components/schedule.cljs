@@ -169,6 +169,11 @@
 (defelement -action-separator
   :class [:mt2])
 
+(defelement -event-icon
+  :class [:left :mr0-5]
+  :style {:font-size "60%"
+          :margin-top "8px"})
+
 (defn group-events [events]
   (reduce (fn [acc e]
             (let [type (keyword (get-in e [:confeedence :custom-fields :type]))
@@ -229,7 +234,12 @@
                {:style {:background-color (get-color conference :events-callout-bg-color)
                         :color (get-color conference :events-callout-bg-color)}}
                [(if (:event-end? e) -event-end-title -event-title) 
-                {:style {:color (get-color conference :events-callout-heading-color)}} (:name e)]
+                {:style {:color (get-color conference :events-callout-heading-color)}}
+                [-event-icon
+                 {:class (class-names {:icon-calendar (= "event" (get-in e [:confeedence :custom-fields :type]))
+                                       :icon-newspaper (= "news" (get-in e [:confeedence :custom-fields :type]))})}]
+
+                (:name e)]
                (when (seq (:description e))
                  [-event-description {:style {:color (get-color conference :events-callout-text-color)}} (:description e)])
                (when show-action-links?

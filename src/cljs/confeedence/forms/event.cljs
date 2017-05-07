@@ -65,7 +65,7 @@
 
 (defn talk-process-out [event-record app-db form-props data]
   (let [cf (get-in data [:confeedence :custom-fields])
-        description (str "<p>" (:description cf) "</p><p><br></p><p><strong>Speaker:</strong>" (:speaker-name cf) "</p><p><br></p><p><strong>Speaker Bio:</strong></p><p><br></p><p>" (:speaker-bio cf) "</p>")]
+        description (str "<p>" (:description cf) "</p><p><br></p><p><strong>Speaker:</strong>" (:speaker-name cf) "</p><p><br></p><p><strong>Speaker Bio:</strong></p><p><br></p><p>" (:speaker-bio cf) "</p>" "<p><br></p><p><strong>Track #" (:track cf) "</strong></p>")]
     (assoc data :description description)))
 
 

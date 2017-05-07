@@ -118,7 +118,7 @@
       [-logo {:src "/images/logo.svg"}]]
      [-menu 
       [-menu-item 
-       [-menu-item-link {:href (ui/url ctx {:page "home"})} "Home"]]
+       [-menu-item-link {:href (ui/url ctx {:page "homepage"})} "Home"]]
       [-menu-item
        [-menu-item-link {:href (ui/url ctx {:page "edit"})} "Admin"]]
       (when show-preview-link?
