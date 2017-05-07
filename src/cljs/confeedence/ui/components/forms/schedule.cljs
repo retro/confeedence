@@ -64,13 +64,13 @@
        :attr :confeedence-tags.track-count
        :options (map (fn [v] [v v]) ["1" "2" "3"])}]
      (when (not new?)
-       [:div
+       [:div.pb3
         [:hr]
         [render-color-selects form-state helpers (:main color-options)]
         [:hr]
         [render-color-selects form-state helpers (:events color-options)]
         [:hr]
-        [render-color-selects form-state helpers (:talks color-options)]])
+        [render-color-selects form-state helpers (:talks color-options)] ])
      [-green-button "Save Conference"]]))
 
 (def component

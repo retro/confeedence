@@ -63,6 +63,12 @@
     (dataloader-controller/wait-dataloader-pipeline!)
     (get-item-by-id app-db :event id)))
 
+(defn talk-process-out [event-record app-db form-props data]
+  (let [cf (get-in data [:confeedence :custom-fields])
+        description (str "<p>" (:description cf) "</p><p><br></p><p><strong>Speaker:</strong>" (:speaker-name cf) "</p><p><br></p><p><strong>Speaker Bio:</strong></p><p><br></p><p>" (:speaker-bio cf) "</p>")]
+    (assoc data :description description)))
+
+
 (defn event-process-out [event-record app-db form-props data]
   (-> data
       process-custom-fields-out
@@ -163,7 +169,9 @@
 (defrecord TalkForm [validator]
   forms-core/IForm
   (process-out [this app-db form-props data]
-    (event-process-out this app-db form-props data))
+    (->> data
+         (talk-process-out this app-db form-props)
+         (event-process-out this app-db form-props)))
   (submit-data [this app-db form-props data]
     (event-submit-data this app-db form-props data))
   (process-attr-with [this path]

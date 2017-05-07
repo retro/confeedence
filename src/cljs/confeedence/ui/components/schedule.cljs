@@ -124,6 +124,10 @@
   :tag :h2
   :class [:mt0 :mb0])
 
+(defelement -event-end-title
+  :tag :h3
+  :class [:mt0-5 :mb0])
+
 (defelement -event-description
   :tag :p
   :class [:mt0-5])
@@ -224,7 +228,8 @@
               [(if (= :left (:timeline-side e)) -timeline-item-wrap-left -timeline-item-wrap-right)
                {:style {:background-color (get-color conference :events-callout-bg-color)
                         :color (get-color conference :events-callout-bg-color)}}
-               [-event-title {:style {:color (get-color conference :events-callout-heading-color)}} (:name e)]
+               [(if (:event-end? e) -event-end-title -event-title) 
+                {:style {:color (get-color conference :events-callout-heading-color)}} (:name e)]
                (when (seq (:description e))
                  [-event-description {:style {:color (get-color conference :events-callout-text-color)}} (:description e)])
                (when show-action-links?
@@ -301,7 +306,7 @@
                      ^{:key idx}
                      [render-talks ctx conference (str "Track #" (inc idx)) (get grouped-talks (inc idx)) show-action-links?])
                    (range 0 track-count)))
-       (when (seq (:unassigned grouped-talks))
+       (when (and show-action-links? (seq (:unassigned grouped-talks)))
          [render-talks ctx conference "Unassigned Talks" (:unassigned grouped-talks) show-action-links?])]
       (when show-action-links?
         [-center-div [-action-link
