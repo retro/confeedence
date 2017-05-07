@@ -16,22 +16,25 @@
            :border-left (str "2px solid " (:grey colors-with-variations))}
           ])
 
-(defelement content-inner-wrap
+(defelement -content-inner-wrap
   :class [:flex-auto :flex]
   :style [{:max-width "100vw"
            :overflow "hidden"}])
 
-(defelement close-wrap
+(defelement -close-wrap
   :tag :a
   :class [:absolute :left-0 :right-0]
   :style [{:width "4rem"
            :height "4rem"}])
 
-(defelement close-icon
+(defelement -close-icon
   :tag :img
   :class [:fit]
   :style [{:width "4rem"
            :height "4rem"}])
+
+(defelement -flex-auto-wrap
+  :class [:flex :flex-auto])
 
 (defn render [ctx]
   (let [access-token (sub> ctx :access-token)
@@ -44,22 +47,22 @@
       [spinner-wrap
        [spinner 64 "#ff3300"]]
 
-      [:div.flex-auto.flex
+      [-flex-auto-wrap
        (if access-token
          (if id
-           [content-inner-wrap
+           [-content-inner-wrap
             [(ui/component ctx :schedule)]
             (when form
               [-sidebar-form-wrap
-               [close-wrap {:href (ui/url ctx (dissoc current-route :form))}
-                [close-icon {:src "/images/close.svg"}]]
+               [-close-wrap {:href (ui/url ctx (dissoc current-route :form))}
+                [-close-icon {:src "/images/close.svg"}]]
                (case (:type form)
                  "conference" [(ui/component ctx :form-schedule)]
                  "event" [(ui/component ctx :form-event)]
                  "news" [(ui/component ctx :form-news)]
                  "talk" [(ui/component ctx :form-talk)]
                  nil)])]
-           [:div.flex-auto.flex
+           [-flex-auto-wrap
             [(ui/component ctx :schedule-list)]
             [(ui/component ctx :form-schedule)]])
          [(ui/component ctx :form-access-token)])])))

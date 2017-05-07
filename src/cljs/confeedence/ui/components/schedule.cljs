@@ -21,55 +21,56 @@
   :tag :a
   :class [:bg-blue :c-white :px1 :py0-5 :rounded :text-decoration-none :inline-block :border-width-2 :bd-white :border])
 
-(defelement main-wrap
+(defelement -main-wrap
   :class [:relative :flex :flex-column :flex-auto]
   :style [{:overflow-y "auto"
            :min-height "100%"}])
 
-(defelement center-div
+(defelement -center-div
   :class [:center])
 
-(defelement conference-info-wrap
+(defelement -conference-info-wrap
   :class [:py6])
 
-(defelement title-center
+(defelement -title-center
   :tag :h1
   :class [:center :mt0 :mb1]
   :style {:font-size "8rem"})
 
-(defelement conference-description
+(defelement -conference-description
   :tag :p
   :class [:c-large :center :px4 :mx-auto]
   :style [{:max-width "120rem"}])
 
-(defelement events-wrap
+(defelement -events-wrap
   :class [:pb4])
 
-(defelement subtitle-center
+(defelement -subtitle-center
   :tag :h2
   :class [:center])
 
-(defelement talks-wrap)
+(defelement -talks-wrap
+  :class [:pb2])
 
-(defelement talks-column-wrap
+(defelement -talks-column-wrap
   :class [:flex :justify-center :pb4])
 
-(defelement date-circle
+(defelement -date-circle
   :tag :span
-  :class [:absolute :left-0 :right-0 :mx-auto :circle :flex :items-center :justify-center :c-white :bg-blue :c-button :center]
+  :class [:absolute :left-0 :p0-5 :right-0 :mx-auto :circle :flex :items-center :justify-center :c-white :bg-blue :c-button :center]
   :style [{:width "7rem"
            :height "7rem"}])
 
-(defelement timeline-wrap
+(defelement -timeline-wrap
   :tag :ul
   :class [:mx-auto :clearfix :list-reset :relative]
   :style [{:max-width "120rem"}])
 
-(defelement timeline-item
+(defelement -timeline-item
   :tag :li
   :class [:clearfix :pb2 :relative])
 
-(defelement timeline-line
+(defelement -timeline-line
   :class [:absolute]
   :style [{:top 0
            :left "50%"
@@ -79,7 +80,7 @@
           [:&.last-ev {:bottom "auto"
                        :height "20px"}]])
 
-(defelement timeline-item-wrap-left
+(defelement -timeline-item-wrap-left
   :class [:bg-lightest-gray :left :px2 :py1 :relative]
   :style [{:border-radius "0.2rem"
            :width "42%"
@@ -99,7 +100,7 @@
                      :border-bottom-color "transparent"
                      :border-left-color "currentColor"}]])
 
-(defelement timeline-item-wrap-right
+(defelement -timeline-item-wrap-right
   :class [:bg-lightest-gray :right :px2 :py1 :relative]
   :style [{:border-radius "0.2rem"
            :width "42%"
@@ -119,17 +120,50 @@
                       :border-bottom-color "transparent"
                       :border-left-color "transparent"}]])
 
-(defelement event-title
+(defelement -event-title
   :tag :h2
   :class [:mt0 :mb0])
 
-(defelement event-description
+(defelement -event-description
   :tag :p
   :class [:mt0-5])
 
-(defelement talk-wrap
+(defelement -track-wrap
   :class [:my0 :mx2 :center]
   :style [{:width "350px"}])
+
+
+(defelement -talk-wrap
+  :class [:pb3 :px2])
+
+(defelement -talk-title
+  :tag :p
+  :class [:c-large :mb1])
+
+(defelement -talk-date
+  :tag :p
+  :class [:c-small :m0-5 :italic])
+
+(defelement -talk-time
+  :tag :p
+  :class [:c-small :m0 :italic])
+
+(defelement -talk-description
+  :tag :p
+  :class [:c-medium])
+
+(defelement -talk-speaker-avatar
+  :tag :img
+  :class [:circle]
+  :style [:height "5rem"
+          :width "5rem"])
+
+(defelement -talk-speaker-info
+  :tag :p
+  :class [:c-body :my0-5])
+
+(defelement -action-separator
+  :class [:mt2])
 
 (defn group-events [events]
   (reduce (fn [acc e]
@@ -181,50 +215,49 @@
   (let [current-route (route> ctx)
         first-ev (first events)
         last-ev (last events)]
-    [timeline-wrap
+    [-timeline-wrap
      (doall
       (map (fn [e]
-             [timeline-item {:key [(:id e) (:event-end? e)]}
-              [timeline-line {:style {:background-color (get-color conference :events-timeline-bg-color)}
-                              :class (class-names {:last-ev (= e last-ev)})}]
-              [(if (= :left (:timeline-side e)) timeline-item-wrap-left timeline-item-wrap-right)
+             [-timeline-item {:key [(:id e) (:event-end? e)]}
+              [-timeline-line {:style {:background-color (get-color conference :events-timeline-bg-color)}
+                               :class (class-names {:last-ev (= e last-ev)})}]
+              [(if (= :left (:timeline-side e)) -timeline-item-wrap-left -timeline-item-wrap-right)
                {:style {:background-color (get-color conference :events-callout-bg-color)
                         :color (get-color conference :events-callout-bg-color)}}
-               [event-title {:style {:color (get-color conference :events-callout-heading-color)}} (:name e)]
+               [-event-title {:style {:color (get-color conference :events-callout-heading-color)}} (:name e)]
                (when (seq (:description e))
-                 [event-description {:style {:color (get-color conference :events-callout-text-color)}} (:description e)])
+                 [-event-description {:style {:color (get-color conference :events-callout-text-color)}} (:description e)])
                (when show-action-links?
                  [-action-link
                   {:href (ui/url ctx (assoc current-route :form {:type (get-in e [:confeedence :custom-fields :type]) :id (:id e)}))} 
                   "Edit Event"])]
-              [date-circle {:style {:background-color (get-color conference :events-timeline-bg-color)
-                                    :color (get-color conference :events-timeline-text-color)}}
+              [-date-circle {:style {:background-color (get-color conference :events-timeline-bg-color)
+                                     :color (get-color conference :events-timeline-text-color)}}
                (format-date (get-in e [:when :startDate]))]]) events))]))
-
 
 (defn render-talk [ctx conference talk last-talk show-action-links?]
   (let [current-route (route> ctx)
         last? (= talk last-talk)]
     (let [photo-url (get-in talk [:confeedence :custom-fields :speaker-photo-url])]
-      [:div.pb3.px2 (when (not last?) {:style {:border-bottom "1px solid"
+      [-talk-wrap (when (not last?) {:style {:border-bottom "1px solid"
                                                :border-bottom-color (get-color conference :talks-bg-color)}})
-       [:p.c-large.mb1 {:style {:color (get-color conference :talks-talk-heading-color)}} (:name talk)]
-       [:p.c-small.m0-5.italic {:style {:color (get-color conference :talks-talk-text-color)}} (format-date (get-in talk [:when :startDate]))]
-       [:p.c-small.m0.italic {:style {:color (get-color conference :talks-talk-text-color)}} (str (format-time-only (get-in talk [:when :startDate])) " - " (format-time-only (get-in talk [:when :endDate])))]
-       [:p.c-medium {:style {:color (get-color conference :talks-talk-text-color)}} (get-in talk [:confeedence :custom-fields :description])]
-       [:img {:src (if (seq photo-url) photo-url "/img/avatar.png")
+       [-talk-title {:style {:color (get-color conference :talks-talk-heading-color)}} (:name talk)]
+       [-talk-date {:style {:color (get-color conference :talks-talk-text-color)}} (format-date (get-in talk [:when :startDate]))]
+       [-talk-time {:style {:color (get-color conference :talks-talk-text-color)}} (str (format-time-only (get-in talk [:when :startDate])) " - " (format-time-only (get-in talk [:when :endDate])))]
+       [-talk-description {:style {:color (get-color conference :talks-talk-text-color)}} (get-in talk [:confeedence :custom-fields :description])]
+       [-talk-speaker-avatar {:src (if (seq photo-url) photo-url "/img/avatar.png")
               :class "circle"
               :style {:height "5rem" 
                       :width "5rem"}}]
-       [:p.c-body.my0-5 {:style {:color (get-color conference :talks-talk-heading-color)}} (get-in talk [:confeedence :custom-fields :speaker-name])]
-       [:p.c-body.my0-5 {:style {:color (get-color conference :talks-talk-heading-color)}} (get-in talk [:confeedence :custom-fields :speaker-bio])] 
+       [-talk-speaker-info {:style {:color (get-color conference :talks-talk-heading-color)}} (get-in talk [:confeedence :custom-fields :speaker-name])]
+       [-talk-speaker-info {:style {:color (get-color conference :talks-talk-heading-color)}} (get-in talk [:confeedence :custom-fields :speaker-bio])] 
        (when show-action-links?
-         [:div.mt2
+         [-action-separator
           [-action-link {:href (ui/url ctx (assoc current-route :form {:type "talk" :id (:id talk)}))} "Edit Talk"]])])))
 
 (defn render-talks [ctx conference track-name talks show-action-links?]
   (let [last-talk (last talks)]
-    [talk-wrap
+    [-track-wrap
      {:key track-name
       :style {:background-color (get-color conference :talks-track-bg-color)}} 
      [:h2
@@ -247,23 +280,23 @@
         grouped-talks (group-talks-by-track (sort-events (:talk grouped-events)) track-count)
         show-action-links? (= "edit" (:page current-route))]
 
-    [main-wrap {:style {:background-color (get-color conference :main-bg-color)}}
-     [conference-info-wrap
-      [title-center {:style {:color (get-color conference :main-heading-color)}} (:name conference)]
-      [conference-description {:style {:color (get-color conference :main-text-color)}} (:description conference)]
+    [-main-wrap {:style {:background-color (get-color conference :main-bg-color)}}
+     [-conference-info-wrap
+      [-title-center {:style {:color (get-color conference :main-heading-color)}} (:name conference)]
+      [-conference-description {:style {:color (get-color conference :main-text-color)}} (:description conference)]
       (when show-action-links?
-        [center-div
+        [-center-div
          [-action-link {:href (ui/url ctx (assoc current-route :form {:type "conference"}))} "Edit Conference Info"]])]
-     [events-wrap {:style {:background-color (get-color conference :events-bg-color)}}
-      [subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
+     [-events-wrap {:style {:background-color (get-color conference :events-bg-color)}}
+      [-subtitle-center {:style {:color (get-color conference :events-heading-color)}} "Events"]
       [render-events ctx conference timeline-events show-action-links?]
       (when show-action-links?
-        [center-div
+        [-center-div
          [-action-link {:href (ui/url ctx (assoc current-route :form {:type "event"})) :class "mr1"} "Add New event"]
          [-action-link {:href (ui/url ctx (assoc current-route :form {:type "news"})) :class "ml1"} "Add News"]])]
-     [talks-wrap {:style {:background-color (get-color conference :talks-bg-color)}}
-      [subtitle-center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
-      [talks-column-wrap
+     [-talks-wrap {:style {:background-color (get-color conference :talks-bg-color)}}
+      [-subtitle-center {:style {:color (get-color conference :talks-heading-color)}} "Talks"]
+      [-talks-column-wrap
        (doall (map (fn [idx]
                      ^{:key idx}
                      [render-talks ctx conference (str "Track #" (inc idx)) (get grouped-talks (inc idx)) show-action-links?])
@@ -271,7 +304,7 @@
        (when (seq (:unassigned grouped-talks))
          [render-talks ctx conference "Unassigned Talks" (:unassigned grouped-talks) show-action-links?])]
       (when show-action-links?
-        [:div.center.pb2 [-action-link
+        [-center-div [-action-link
                           {:href (ui/url ctx (assoc current-route :form {:type "talk"}))}
                           "Add New Talk"]])]]))
 

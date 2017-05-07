@@ -1,5 +1,6 @@
 (ns confeedence.ui.components.forms.news
   (:require [keechma.ui-component :as ui]
+            [keechma.toolbox.css.core :refer-macros [defelement]]
             [confeedence.ui.components.pure.form-elements
              :refer [controlled-input
                      controlled-textarea
@@ -15,6 +16,9 @@
             [confeedence.static-data :refer [timezones]]
             [confeedence.ui.components.forms.event-shared :refer [time-period-opts get-date-format get-time-format]]))
 
+(defelement -form-wrap
+  :tag :form
+  :class [:p2 :mx-auto :max-width-4 :flex-auto])
 
 (defn render [ctx]
   (let [current-route (route> ctx)
@@ -24,7 +28,7 @@
         submit (:submit helpers)
         new? (not (get-in form-state [:data :id]))]
     
-    [:form.p2.mx-auto.max-width-4.flex-auto {:on-submit submit}
+    [-form-wrap {:on-submit submit}
      [:h1 (if new? "Create a new news" "Update news")]
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "We couldn't save the news item"])

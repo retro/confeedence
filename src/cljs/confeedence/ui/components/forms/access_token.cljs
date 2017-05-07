@@ -6,7 +6,7 @@
             [keechma.toolbox.forms.helpers :as forms-helpers]
             [confeedence.forms.validators :as validators]))
 
-(defelement form-wrap
+(defelement -form-wrap
   :tag :form
   :class [:m4 :mx-auto :max-width-4 :flex-auto])
 
@@ -16,7 +16,7 @@
         helpers (forms-helpers/make-component-helpers ctx form-props)
         submit (:submit helpers)]
     
-    [form-wrap {:on-submit submit}
+    [-form-wrap {:on-submit submit}
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "Wrong Access Token"])
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Access Token" :attr :access-token}]

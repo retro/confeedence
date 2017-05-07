@@ -9,7 +9,7 @@
             [keechma.toolbox.ui :refer [route>]]
             [confeedence.stylesheets.colors :refer [theme-colors]]))
 
-(defelement form-wrap
+(defelement -form-wrap
   :tag :form
   :class [:p2 :mx-auto :max-width-4 :flex-auto])
 
@@ -52,7 +52,7 @@
         submit (:submit helpers)
         new? (not (get-in form-state [:data :id]))]
    
-    [form-wrap {:on-submit submit}
+    [-form-wrap {:on-submit submit}
      [:h1 (if new? "Create a new conference" "Update conference")]
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "We couldn't save the conference"])
