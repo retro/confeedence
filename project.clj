@@ -16,7 +16,8 @@
                  [hodgepodge "0.1.3"]
                  [cljsjs/react-datetime "2.6.0-0" :exclusions [cljsjs/react]]
                  [cljsjs/moment "2.17.1-0"]
-                 [cljsjs/moment-timezone "0.5.11-0"]]
+                 [cljsjs/moment-timezone "0.5.11-0"]
+                 [keechma/toolbox "0.0.1-SNAPSHOT-2"]]
 
   :min-lein-version "2.5.3"
 
