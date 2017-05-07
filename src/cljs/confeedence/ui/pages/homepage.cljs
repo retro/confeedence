@@ -23,7 +23,8 @@
    [:div.center.my6.pt4
     [:a.bg-green.rounded.py2.px4.c-large.text-decoration-none.c-white {:href (ui/url ctx {:page "edit"})} "Try it out"]]
    [:p.c-small
-    "* You will need a WhenHub access token to continue. You can find more information about the access tokens " [:a.c-blue {:href "https://developer.whenhub.com/v1.0/docs/connecting-to-the-api" :target "_blank"} "here"] "."]])
+    "* You will need a WhenHub access token to continue. You can find more information about the access tokens " [:a.c-blue {:href "https://developer.whenhub.com/v1.0/docs/connecting-to-the-api" :target "_blank"} "here"] "."]
+   [:div.clearfix.pb2]])
 
 (def component
   (ui/constructor {:renderer render}))
