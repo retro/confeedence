@@ -78,7 +78,7 @@
   :class [:text-decoration-none :c-body :c-semi-gray :c-h-dark :pointer])
 
 (defelement -profile-info-wrap
-  :class [:p2 :border-left :border-right :bd-light-gray])
+  :class [:p2 :border-left :border-right :border-bottom :bd-light-gray])
 
 (defelement -profile-info
   :tag :p
@@ -103,12 +103,7 @@
      [-profile-info-wrap
       [-profile-greeting-mobile (str "Hello " (get-in usr [:name :givenName]) ".")]
       [-profile-info (:email usr)]
-      [-profile-info (str "Member since " (format-date (:createdAt usr)))]]
-     [-profile-links-wrap
-      [-link-item-wrap
-       [-link-item "My events"]]
-      [-link-item-wrap 
-       [-link-item "Logout"]]]]]])
+      [-profile-info (str "Member since " (format-date (:createdAt usr)))]]]]])
 
 (defn render-navbar [ctx usr]
   (let [current-route (route> ctx)

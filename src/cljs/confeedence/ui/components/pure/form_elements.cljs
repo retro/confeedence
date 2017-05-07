@@ -151,7 +151,7 @@
 
 (defelement -swatch-dropdown
   :class [:absolute :dropdown :bg-white :mr2 :p1 :bg-lightest-gray]
-  :style [])
+  :style [{:z-index 100}])
 
 
 (defn get-swatch-border-color [background-color]
