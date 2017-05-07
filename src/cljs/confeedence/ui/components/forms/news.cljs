@@ -29,7 +29,7 @@
         new? (not (get-in form-state [:data :id]))]
     
     [-form-wrap {:on-submit submit}
-     [:h1 (if new? "Create a new news" "Update news")]
+     [:h1 (if new? "Create news" "Update news")]
      (when (= :submit-failed (get-in form-state [:state :type]))
        [:div.bg-red.c-white.p1.mb2 "We couldn't save the news item"])
      [controlled-input {:form-state form-state :helpers helpers :placeholder "Name" :attr :name}]
